@@ -74,6 +74,7 @@ dependencies {
     // compile('com.github.symbiote-h2020:SymbIoTeLibraries:0.2.0')
 
 
+
     // Spring
     compile('org.springframework.cloud:spring-cloud-starter-config')
     compile('org.springframework.cloud:spring-cloud-starter-eureka')
@@ -86,7 +87,8 @@ dependencies {
 
     // test only
     testCompile('org.springframework.boot:spring-boot-starter-test')
-
+    testCompile('com.github.tomakehurst:wiremock')
+    testCompile('org.springframework:spring-core')
 }
 
 // code quality below
@@ -111,6 +113,7 @@ jacocoTestReport {
 dependencyCheck {
     outputDirectory = "build/reports/security"
 }
+
 
 // including code quality extensions into the build
 check.dependsOn(jacocoTestReport, 'dependencyCheck')
