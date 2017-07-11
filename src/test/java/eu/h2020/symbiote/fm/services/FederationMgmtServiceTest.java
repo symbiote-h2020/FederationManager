@@ -24,13 +24,62 @@ public class FederationMgmtServiceTest {
 	private final FederationMgmtService service = new FederationMgmtService();
 
 	@Test
-	public void testProcessUpdate() throws Exception {
+	public void testProcessCreate() throws Exception {
 		FederationObject fed = new FederationObject();
+		fed.setId("123");
 
-		Mockito.when(repository.getById(Mockito.anyString())).thenReturn(fed);
+		Mockito.when(repository.exists(Mockito.anyString())).thenReturn(false);
 
 		Assert.assertTrue(service.processUpdate(fed));
-		Mockito.verify(repository, Mockito.times(1)).getById(Mockito.anyString());
-		Mockito.verify(msgHandler, Mockito.times(1)).publishCreated(Mockito.any());
+
+		Mockito.verify(repository, Mockito.times(1)).exists(fed.getId());
+		Mockito.verify(msgHandler, Mockito.times(1)).publishCreated(fed);
+		Mockito.verify(msgHandler, Mockito.times(0)).publishUpdated(Mockito.any());
+		Mockito.verify(msgHandler, Mockito.times(0)).publishDeleted(Mockito.any());
+	}
+
+	@Test
+	public void testProcessUpdate() throws Exception {
+		FederationObject fed = new FederationObject();
+		fed.setId("123");
+
+		Mockito.when(repository.exists(Mockito.anyString())).thenReturn(true);
+
+		Assert.assertTrue(service.processUpdate(fed));
+
+		Mockito.verify(repository, Mockito.times(1)).exists(fed.getId());
+		Mockito.verify(msgHandler, Mockito.times(1)).publishUpdated(fed);
+		Mockito.verify(msgHandler, Mockito.times(0)).publishCreated(Mockito.any());
+		Mockito.verify(msgHandler, Mockito.times(0)).publishDeleted(Mockito.any());
+	}
+
+	@Test
+	public void testProcessDelete() throws Exception {
+		FederationObject fed = new FederationObject();
+		fed.setId("123");
+
+		Mockito.when(repository.exists(Mockito.anyString())).thenReturn(true);
+
+		Assert.assertTrue(service.processDelete(fed.getId()));
+
+		Mockito.verify(repository, Mockito.times(1)).exists(fed.getId());
+		Mockito.verify(msgHandler, Mockito.times(1)).publishDeleted(fed.getId());
+		Mockito.verify(msgHandler, Mockito.times(0)).publishCreated(Mockito.any());
+		Mockito.verify(msgHandler, Mockito.times(0)).publishUpdated(Mockito.any());
+	}
+
+	@Test
+	public void testProcessDeleteNotFound() throws Exception {
+		FederationObject fed = new FederationObject();
+		fed.setId("123");
+
+		Mockito.when(repository.exists(Mockito.anyString())).thenReturn(false);
+
+		Assert.assertTrue(service.processDelete(fed.getId()));
+
+		Mockito.verify(repository, Mockito.times(1)).exists(fed.getId());
+		Mockito.verify(msgHandler, Mockito.times(0)).publishDeleted(fed.getId());
+		Mockito.verify(msgHandler, Mockito.times(0)).publishCreated(Mockito.any());
+		Mockito.verify(msgHandler, Mockito.times(0)).publishUpdated(Mockito.any());
 	}
 }

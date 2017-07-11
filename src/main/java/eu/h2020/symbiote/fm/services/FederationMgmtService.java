@@ -26,16 +26,19 @@ public class FederationMgmtService {
 	/**
 	 * Handle process when federation object is created/updated.
 	 * 
-	 * @param {@link
-	 * 			FederationObject}
+	 * @param fed
+	 *            {@link FederationObject}
 	 */
 	public boolean processUpdate(FederationObject fed) {
-		logger.debug("Processing update for id: {}", fed.getId(), fed);
-		repository.getById(fed.getId());
+		logger.debug("Processing update {}", fed.getId());
 
+		if (repository.exists(fed.getId())) {
+			msgHandler.publishUpdated(fed);
+		} else {
+			msgHandler.publishCreated(fed);
+		}
 		repository.save(fed);
-		msgHandler.publishCreated(fed);
-		// TODO: add logic here
+
 		return true;
 	}
 
@@ -46,10 +49,14 @@ public class FederationMgmtService {
 	 */
 	public boolean processDelete(String fedId) {
 		logger.debug("Processing delete with id: {}", fedId);
-		repository.delete(fedId);
 
-		msgHandler.publishDeleted(fedId);
-		// TODO: add logic here
+		if (repository.exists(fedId)) {
+			repository.delete(fedId);
+			msgHandler.publishDeleted(fedId);
+		} else {
+			// TODO: Handle this situation
+		}
+
 		return true;
 	}
 }
