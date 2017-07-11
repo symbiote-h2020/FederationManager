@@ -77,7 +77,7 @@ public class FederationAMQPService {
 	 * @param msg
 	 */
 	private void send(String routingKey, String msg) {
-		logger.debug("Message published with routingkey: {}", routingKey, msg);
+		logger.debug("Message published with routingkey: {} and msg: {}", routingKey, msg);
 		template.setExchange(FEDERATION_TOPIC);
 		template.convertAndSend(routingKey, msg);
 	}
