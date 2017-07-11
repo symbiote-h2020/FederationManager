@@ -26,7 +26,7 @@ public class Utils {
 	 */
 	public static String convertObjectToJson(Object obj) throws JsonProcessingException {
 		ObjectMapper mapper = new ObjectMapper();
-		mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+		mapper.configure(SerializationFeature.INDENT_OUTPUT, false);
 		mapper.setSerializationInclusion(Include.NON_EMPTY);
 		return mapper.writeValueAsString(obj);
 	}
