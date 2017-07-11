@@ -39,7 +39,7 @@ public class FederationController {
 	@PutMapping(value = "/{fedId}")
 	public ResponseEntity<String> createUpdateFederation(@PathVariable("fedId") String fedId, @RequestBody FederationObject fedObj) {
 
-		logger.debug("Create/update fed obj with id: {}", fedId, fedObj);
+		logger.debug("Create/update fed obj with id: {}", fedId);
 		federationMgmtService.processUpdate(fedObj);
 
 		return new ResponseEntity<>(HttpStatus.OK);
