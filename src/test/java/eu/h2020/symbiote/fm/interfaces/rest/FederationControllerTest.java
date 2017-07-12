@@ -1,7 +1,7 @@
 package eu.h2020.symbiote.fm.interfaces.rest;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.Test;
@@ -35,7 +35,7 @@ public class FederationControllerTest {
 
 		Mockito.when(service.processUpdate(fed)).thenReturn(true);
 
-		mvc.perform(put("/fm/federations/123").contentType(MediaType.APPLICATION_JSON).content(Utils.convertObjectToJson(fed))).andExpect(status().isOk());
+		mvc.perform(post("/fm/federations/").contentType(MediaType.APPLICATION_JSON).content(Utils.convertObjectToJson(fed))).andExpect(status().isOk());
 	}
 
 	@Test
