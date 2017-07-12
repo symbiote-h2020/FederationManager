@@ -28,13 +28,13 @@ public class FederationObject {
 
 	@Field("public")
 	@JsonProperty("public")
-	private final boolean isPublic = true;
+	private boolean isPublic = true;
 
 	@JsonProperty("slaDefinition")
 	private String slaDefinition;
 
 	@JsonProperty("members")
-	private final List<String> members = new ArrayList<>();
+	private List<String> members = new ArrayList<>();
 
 	public String getId() {
 		return this.id;
@@ -64,8 +64,15 @@ public class FederationObject {
 		this.name = name;
 	}
 
+	public void setPublic(boolean isPublic) {
+		this.isPublic = isPublic;
+	}
+
 	public void setSlaDefinition(String slaDefinition) {
 		this.slaDefinition = slaDefinition;
 	}
 
+	public void setMembers(List<String> members) {
+		this.members = members;
+	}
 }
