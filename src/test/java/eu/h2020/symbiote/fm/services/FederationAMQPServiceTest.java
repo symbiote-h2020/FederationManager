@@ -8,7 +8,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -16,7 +15,6 @@ import eu.h2020.symbiote.fm.repositories.FederationObject;
 import eu.h2020.symbiote.fm.utils.Utils;
 
 @RunWith(SpringRunner.class)
-@TestPropertySource(value = "classpath:/application.properties")
 public class FederationAMQPServiceTest {
 
 	@Mock
