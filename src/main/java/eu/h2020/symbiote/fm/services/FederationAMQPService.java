@@ -2,8 +2,10 @@ package eu.h2020.symbiote.fm.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -21,13 +23,20 @@ import eu.h2020.symbiote.fm.utils.Utils;
 public class FederationAMQPService {
 	private static final Logger logger = LoggerFactory.getLogger(FederationAMQPService.class);
 
-	private static final String FEDERATION_TOPIC = "symbIoTe.federation";
-	private static final String FEDERATION_KEY_CREATED = FEDERATION_TOPIC + ".created";
-	private static final String FEDERATION_KEY_CHANGED = FEDERATION_TOPIC + ".changed";
-	private static final String FEDERATION_KEY_DELETED = FEDERATION_TOPIC + ".deleted";
+	@Value("${rabbit.routingKey.federation.created}")
+	private String routingKeyFederationCreated;
+
+	@Value("${rabbit.routingKey.federation.changed}")
+	private String routingKeyFederationChanged;
+
+	@Value("${rabbit.routingKey.federation.deleted}")
+	private String routingKeyFederationDeleted;
 
 	@Autowired
 	private RabbitTemplate template;
+
+	@Autowired
+	private TopicExchange federationTopic;
 
 	/**
 	 * Publish created federation object to topic.
@@ -35,7 +44,7 @@ public class FederationAMQPService {
 	 * @param fedObj
 	 */
 	public void publishCreated(FederationObject fedObj) {
-		send(FEDERATION_KEY_CREATED, fedObj);
+		send(routingKeyFederationCreated, fedObj);
 	}
 
 	/**
@@ -44,7 +53,7 @@ public class FederationAMQPService {
 	 * @param fedObj
 	 */
 	public void publishUpdated(FederationObject fedObj) {
-		send(FEDERATION_KEY_CHANGED, fedObj);
+		send(routingKeyFederationChanged, fedObj);
 	}
 
 	/**
@@ -53,7 +62,7 @@ public class FederationAMQPService {
 	 * @param fedId
 	 */
 	public void publishDeleted(String fedId) {
-		send(FEDERATION_KEY_DELETED, fedId);
+		send(routingKeyFederationDeleted, fedId);
 	}
 
 	/**
@@ -78,8 +87,7 @@ public class FederationAMQPService {
 	 */
 	private void send(String routingKey, String msg) {
 		logger.debug("Message published with routingkey: {} and msg: {}", routingKey, msg);
-		template.setExchange(FEDERATION_TOPIC);
-		template.convertAndSend(routingKey, msg);
+		template.convertAndSend(federationTopic.getName(), routingKey, msg);
 	}
 
 }
