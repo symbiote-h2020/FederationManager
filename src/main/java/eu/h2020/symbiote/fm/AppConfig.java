@@ -37,10 +37,4 @@ class AppConfig extends AbstractMongoConfiguration {
 	public Mongo mongo() throws Exception {
 		return new MongoClient();
 	}
-
-	@Override
-	protected String getMappingBasePackage() {
-		return "com.oreilly.springdata.mongodb";
-	}
-
 }

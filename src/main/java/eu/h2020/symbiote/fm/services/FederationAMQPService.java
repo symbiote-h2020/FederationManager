@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import eu.h2020.symbiote.fm.repositories.FederationObject;
+import eu.h2020.symbiote.core.model.Federation;
 import eu.h2020.symbiote.fm.utils.Utils;
 
 /**
@@ -43,7 +43,7 @@ public class FederationAMQPService {
 	 * 
 	 * @param fedObj
 	 */
-	public void publishCreated(FederationObject fedObj) {
+	public void publishCreated(Federation fedObj) {
 		send(routingKeyFederationCreated, fedObj);
 	}
 
@@ -52,7 +52,7 @@ public class FederationAMQPService {
 	 * 
 	 * @param fedObj
 	 */
-	public void publishUpdated(FederationObject fedObj) {
+	public void publishUpdated(Federation fedObj) {
 		send(routingKeyFederationChanged, fedObj);
 	}
 
@@ -71,7 +71,7 @@ public class FederationAMQPService {
 	 * @param routingKey
 	 * @param msg
 	 */
-	private void send(String routingKey, FederationObject fedObj) {
+	private void send(String routingKey, Federation fedObj) {
 		try {
 			send(routingKey, Utils.convertObjectToJson(fedObj));
 		} catch (JsonProcessingException e) {

@@ -8,7 +8,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import eu.h2020.symbiote.fm.repositories.FederationObject;
+import eu.h2020.symbiote.core.model.Federation;
 import eu.h2020.symbiote.fm.repositories.FederationRepository;
 
 @RunWith(SpringRunner.class)
@@ -25,7 +25,7 @@ public class FederationMgmtServiceTest {
 
 	@Test
 	public void testProcessCreate() throws Exception {
-		FederationObject fed = new FederationObject();
+		Federation fed = new Federation();
 		fed.setId("123");
 
 		Mockito.when(repository.exists(Mockito.anyString())).thenReturn(false);
@@ -40,7 +40,7 @@ public class FederationMgmtServiceTest {
 
 	@Test
 	public void testProcessUpdate() throws Exception {
-		FederationObject fed = new FederationObject();
+		Federation fed = new Federation();
 		fed.setId("123");
 
 		Mockito.when(repository.exists(Mockito.anyString())).thenReturn(true);
@@ -55,7 +55,7 @@ public class FederationMgmtServiceTest {
 
 	@Test
 	public void testProcessDelete() throws Exception {
-		FederationObject fed = new FederationObject();
+		Federation fed = new Federation();
 		fed.setId("123");
 
 		Mockito.when(repository.exists(Mockito.anyString())).thenReturn(true);
@@ -70,7 +70,7 @@ public class FederationMgmtServiceTest {
 
 	@Test
 	public void testProcessDeleteNotFound() throws Exception {
-		FederationObject fed = new FederationObject();
+		Federation fed = new Federation();
 		fed.setId("123");
 
 		Mockito.when(repository.exists(Mockito.anyString())).thenReturn(false);

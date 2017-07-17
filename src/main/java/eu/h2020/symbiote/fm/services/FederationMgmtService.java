@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import eu.h2020.symbiote.fm.repositories.FederationObject;
+import eu.h2020.symbiote.core.model.Federation;
 import eu.h2020.symbiote.fm.repositories.FederationRepository;
 
 /**
@@ -27,9 +27,9 @@ public class FederationMgmtService {
 	 * Handle process when federation object is created/updated.
 	 * 
 	 * @param fed
-	 *            {@link FederationObject}
+	 *            {@link FederationEntity}
 	 */
-	public boolean processUpdate(FederationObject fed) {
+	public boolean processUpdate(Federation fed) {
 		logger.debug("Processing update {}", fed.getId());
 
 		if (repository.exists(fed.getId())) {

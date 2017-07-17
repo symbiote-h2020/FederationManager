@@ -6,14 +6,14 @@ import java.util.stream.Stream;
 import org.junit.Assert;
 import org.junit.Test;
 
-import eu.h2020.symbiote.fm.repositories.FederationObject;
+import eu.h2020.symbiote.core.model.Federation;
 
 public class UtilsTest {
 
 	@Test
 	public void testConvertObjToJSON() throws Exception {
 
-		FederationObject fed = new FederationObject();
+		Federation fed = new Federation();
 		fed.setId("fedId");
 		fed.setName("fedName");
 		fed.setPublic(false);

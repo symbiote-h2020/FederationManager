@@ -2,10 +2,12 @@ package eu.h2020.symbiote.fm.repositories;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import eu.h2020.symbiote.core.model.Federation;
+
 /**
  * @author ruggenthalerc
  * 
  *         MongoDB repository interface for Federation objects providing CRUD operations.
  */
-public interface FederationRepository extends MongoRepository<FederationObject, String> {
+public interface FederationRepository extends MongoRepository<Federation, String> {
 }

@@ -11,7 +11,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import eu.h2020.symbiote.fm.repositories.FederationObject;
+import eu.h2020.symbiote.core.model.Federation;
 import eu.h2020.symbiote.fm.utils.Utils;
 
 @RunWith(SpringRunner.class)
@@ -37,7 +37,7 @@ public class FederationAMQPServiceTest {
 
 	@Test
 	public void testPublishCreated() throws Exception {
-		FederationObject fed = new FederationObject();
+		Federation fed = new Federation();
 
 		msgHandler.publishCreated(fed);
 
@@ -48,7 +48,7 @@ public class FederationAMQPServiceTest {
 
 	@Test
 	public void testPublishUpdated() throws Exception {
-		FederationObject fed = new FederationObject();
+		Federation fed = new Federation();
 
 		msgHandler.publishUpdated(fed);
 
