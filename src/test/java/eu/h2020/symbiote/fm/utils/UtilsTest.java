@@ -36,7 +36,8 @@ public class UtilsTest {
 		Assert.assertTrue(serialFed.contains("\"public\":" + fed.isPublic()));
 
 		fed.getMembers().forEach(member -> {
-			Assert.assertTrue(serialFed.contains("\"id\":\"" + member.getId() + "\",\"interworkingService\":\"" + member.getInterworkingService() + "\"}"));
+			Assert.assertTrue(serialFed
+					.contains("\"platformId\":\"" + member.getPlatformId() + "\",\"interworkingServiceURL\":\"" + member.getInterworkingServiceURL() + "\"}"));
 		});
 		Assert.assertEquals(2, fed.getMembers().size());
 	}
