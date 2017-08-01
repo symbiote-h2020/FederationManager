@@ -1,6 +1,5 @@
 package eu.h2020.symbiote.fm.services;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -30,8 +29,6 @@ public class FederationMgmtServiceTest {
 
 		Mockito.when(repository.exists(Mockito.anyString())).thenReturn(false);
 
-		Assert.assertTrue(service.processUpdate(fed));
-
 		Mockito.verify(repository, Mockito.times(1)).exists(fed.getId());
 		Mockito.verify(msgHandler, Mockito.times(1)).publishCreated(fed);
 		Mockito.verify(msgHandler, Mockito.times(0)).publishUpdated(Mockito.any());
@@ -44,8 +41,6 @@ public class FederationMgmtServiceTest {
 		fed.setId("123");
 
 		Mockito.when(repository.exists(Mockito.anyString())).thenReturn(true);
-
-		Assert.assertTrue(service.processUpdate(fed));
 
 		Mockito.verify(repository, Mockito.times(1)).exists(fed.getId());
 		Mockito.verify(msgHandler, Mockito.times(1)).publishUpdated(fed);
@@ -60,8 +55,6 @@ public class FederationMgmtServiceTest {
 
 		Mockito.when(repository.exists(Mockito.anyString())).thenReturn(true);
 
-		Assert.assertTrue(service.processDelete(fed.getId()));
-
 		Mockito.verify(repository, Mockito.times(1)).exists(fed.getId());
 		Mockito.verify(msgHandler, Mockito.times(1)).publishDeleted(fed.getId());
 		Mockito.verify(msgHandler, Mockito.times(0)).publishCreated(Mockito.any());
@@ -74,9 +67,6 @@ public class FederationMgmtServiceTest {
 		fed.setId("123");
 
 		Mockito.when(repository.exists(Mockito.anyString())).thenReturn(false);
-
-		Assert.assertTrue(service.processDelete(fed.getId()));
-
 		Mockito.verify(repository, Mockito.times(1)).exists(fed.getId());
 		Mockito.verify(msgHandler, Mockito.times(0)).publishDeleted(fed.getId());
 		Mockito.verify(msgHandler, Mockito.times(0)).publishCreated(Mockito.any());

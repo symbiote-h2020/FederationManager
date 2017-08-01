@@ -6,7 +6,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -33,8 +32,6 @@ public class FederationControllerTest {
 		Federation fed = new Federation();
 		fed.setId("123");
 
-		Mockito.when(service.processUpdate(fed)).thenReturn(true);
-
 		mvc.perform(post("/fm/federations/").contentType(MediaType.APPLICATION_JSON).content(Utils.convertObjectToJson(fed))).andExpect(status().isOk());
 	}
 
@@ -44,7 +41,6 @@ public class FederationControllerTest {
 		Federation fed = new Federation();
 		fed.setId("123");
 
-		Mockito.when(service.processUpdate(fed)).thenReturn(true);
 		mvc.perform(delete("/fm/federations/123")).andExpect(status().isOk());
 	}
 

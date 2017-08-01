@@ -29,7 +29,7 @@ public class FederationMgmtService {
 	 * @param fed
 	 *            {@link FederationEntity}
 	 */
-	public boolean processUpdate(Federation fed) {
+	public void processUpdate(Federation fed) {
 		logger.debug("Processing update {}", fed.getId());
 
 		if (repository.exists(fed.getId())) {
@@ -38,8 +38,6 @@ public class FederationMgmtService {
 			msgHandler.publishCreated(fed);
 		}
 		repository.save(fed);
-
-		return true;
 	}
 
 	/**
@@ -47,16 +45,13 @@ public class FederationMgmtService {
 	 * 
 	 * @param fedId
 	 */
-	public boolean processDelete(String fedId) {
+	public void processDelete(String fedId) {
 		logger.debug("Processing delete with id: {}", fedId);
 
+		// only publish federation if relevant for platform
 		if (repository.exists(fedId)) {
 			repository.delete(fedId);
 			msgHandler.publishDeleted(fedId);
-		} else {
-			// TODO: Handle this situation
 		}
-
-		return true;
 	}
 }

@@ -21,8 +21,8 @@ public class UtilsTest {
 		fed.setSlaDefinition("FedSla");
 
 		List<FederationMember> members = new ArrayList<Federation.FederationMember>();
-		members.add(fed.new FederationMember("123", "/url/123"));
-		members.add(fed.new FederationMember("456", "/url/456"));
+		members.add(new FederationMember("123", "/url/123"));
+		members.add(new FederationMember("456", "/url/456"));
 
 		fed.setMembers(members);
 
