@@ -73,8 +73,6 @@ dependencies {
     compile('com.github.symbiote-h2020:SymbIoTeLibraries:develop-SNAPSHOT') { changing = true }
     // compile('com.github.symbiote-h2020:SymbIoTeLibraries:0.2.1')
 
-
-
     // Spring
     compile('org.springframework.cloud:spring-cloud-starter-config')
     compile('org.springframework.cloud:spring-cloud-starter-eureka')
@@ -116,4 +114,5 @@ dependencyCheck {
 
 
 // including code quality extensions into the build
-check.dependsOn(jacocoTestReport, 'dependencyCheck')
+// check.dependsOn(jacocoTestReport, 'dependencyCheck')
+check.dependsOn(jacocoTestReport)
