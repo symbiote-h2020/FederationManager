@@ -29,6 +29,8 @@ public class FederationMgmtServiceTest {
 
 		Mockito.when(repository.exists(Mockito.anyString())).thenReturn(false);
 
+		service.processUpdate(fed);
+
 		Mockito.verify(repository, Mockito.times(1)).exists(fed.getId());
 		Mockito.verify(msgHandler, Mockito.times(1)).publishCreated(fed);
 		Mockito.verify(msgHandler, Mockito.times(0)).publishUpdated(Mockito.any());
@@ -41,6 +43,8 @@ public class FederationMgmtServiceTest {
 		fed.setId("123");
 
 		Mockito.when(repository.exists(Mockito.anyString())).thenReturn(true);
+
+		service.processUpdate(fed);
 
 		Mockito.verify(repository, Mockito.times(1)).exists(fed.getId());
 		Mockito.verify(msgHandler, Mockito.times(1)).publishUpdated(fed);
@@ -55,6 +59,8 @@ public class FederationMgmtServiceTest {
 
 		Mockito.when(repository.exists(Mockito.anyString())).thenReturn(true);
 
+		service.processDelete(fed.getId());
+
 		Mockito.verify(repository, Mockito.times(1)).exists(fed.getId());
 		Mockito.verify(msgHandler, Mockito.times(1)).publishDeleted(fed.getId());
 		Mockito.verify(msgHandler, Mockito.times(0)).publishCreated(Mockito.any());
@@ -67,6 +73,9 @@ public class FederationMgmtServiceTest {
 		fed.setId("123");
 
 		Mockito.when(repository.exists(Mockito.anyString())).thenReturn(false);
+
+		service.processDelete(fed.getId());
+
 		Mockito.verify(repository, Mockito.times(1)).exists(fed.getId());
 		Mockito.verify(msgHandler, Mockito.times(0)).publishDeleted(fed.getId());
 		Mockito.verify(msgHandler, Mockito.times(0)).publishCreated(Mockito.any());
