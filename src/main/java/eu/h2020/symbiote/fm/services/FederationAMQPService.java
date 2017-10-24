@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import eu.h2020.symbiote.core.model.Federation;
 import eu.h2020.symbiote.fm.utils.Utils;
+import eu.h2020.symbiote.model.mim.Federation;
 
 /**
  * @author RuggenthalerC

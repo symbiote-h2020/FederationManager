@@ -5,8 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import eu.h2020.symbiote.core.model.Federation;
 import eu.h2020.symbiote.fm.repositories.FederationRepository;
+import eu.h2020.symbiote.model.mim.Federation;
 
 /**
  * @author RuggenthalerC

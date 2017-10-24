@@ -11,8 +11,8 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import eu.h2020.symbiote.core.model.Federation;
 import eu.h2020.symbiote.fm.utils.Utils;
+import eu.h2020.symbiote.model.mim.Federation;
 
 @RunWith(SpringRunner.class)
 public class FederationAMQPServiceTest {

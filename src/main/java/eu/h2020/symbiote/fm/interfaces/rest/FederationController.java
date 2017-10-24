@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import eu.h2020.symbiote.core.model.Federation;
 import eu.h2020.symbiote.fm.services.FederationMgmtService;
+import eu.h2020.symbiote.model.mim.Federation;
 
 /**
  * @author RuggenthalerC

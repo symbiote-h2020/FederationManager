@@ -7,8 +7,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import eu.h2020.symbiote.core.model.Federation;
 import eu.h2020.symbiote.fm.repositories.FederationRepository;
+import eu.h2020.symbiote.model.mim.Federation;
 
 @RunWith(SpringRunner.class)
 public class FederationMgmtServiceTest {
