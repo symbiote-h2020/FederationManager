@@ -1,14 +1,17 @@
 package eu.h2020.symbiote.fm.services;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import eu.h2020.symbiote.fm.repositories.FederationRepository;
 import eu.h2020.symbiote.model.mim.Federation;
+import eu.h2020.symbiote.model.mim.FederationMember;
 
 @RunWith(SpringRunner.class)
 public class FederationMgmtServiceTest {
@@ -22,10 +25,14 @@ public class FederationMgmtServiceTest {
 	@InjectMocks
 	private final FederationMgmtService service = new FederationMgmtService();
 
+	@Before
+	public void setup() throws Exception {
+		ReflectionTestUtils.setField(service, "platformId", "xyz");
+	}
+
 	@Test
 	public void testProcessCreate() throws Exception {
-		Federation fed = new Federation();
-		fed.setId("123");
+		Federation fed = createValidObject();
 
 		Mockito.when(repository.exists(Mockito.anyString())).thenReturn(false);
 
@@ -38,10 +45,25 @@ public class FederationMgmtServiceTest {
 	}
 
 	@Test
-	public void testProcessUpdate() throws Exception {
-		Federation fed = new Federation();
-		fed.setId("123");
+	public void testProcessCreateNoMember() throws Exception {
+		Federation fed = createValidObject();
 
+		// Platform not part of federation members
+		ReflectionTestUtils.setField(service, "platformId", "xyz1");
+
+		Mockito.when(repository.exists(Mockito.anyString())).thenReturn(false);
+
+		service.processUpdate(fed);
+
+		Mockito.verify(repository, Mockito.times(0)).exists(fed.getId());
+		Mockito.verify(msgHandler, Mockito.times(0)).publishCreated(fed);
+		Mockito.verify(msgHandler, Mockito.times(0)).publishUpdated(Mockito.any());
+		Mockito.verify(msgHandler, Mockito.times(0)).publishDeleted(Mockito.any());
+	}
+
+	@Test
+	public void testProcessUpdate() throws Exception {
+		Federation fed = createValidObject();
 		Mockito.when(repository.exists(Mockito.anyString())).thenReturn(true);
 
 		service.processUpdate(fed);
@@ -54,8 +76,7 @@ public class FederationMgmtServiceTest {
 
 	@Test
 	public void testProcessDelete() throws Exception {
-		Federation fed = new Federation();
-		fed.setId("123");
+		Federation fed = createValidObject();
 
 		Mockito.when(repository.exists(Mockito.anyString())).thenReturn(true);
 
@@ -69,8 +90,7 @@ public class FederationMgmtServiceTest {
 
 	@Test
 	public void testProcessDeleteNotFound() throws Exception {
-		Federation fed = new Federation();
-		fed.setId("123");
+		Federation fed = createValidObject();
 
 		Mockito.when(repository.exists(Mockito.anyString())).thenReturn(false);
 
@@ -80,5 +100,15 @@ public class FederationMgmtServiceTest {
 		Mockito.verify(msgHandler, Mockito.times(0)).publishDeleted(fed.getId());
 		Mockito.verify(msgHandler, Mockito.times(0)).publishCreated(Mockito.any());
 		Mockito.verify(msgHandler, Mockito.times(0)).publishUpdated(Mockito.any());
+	}
+
+	private Federation createValidObject() {
+		Federation fed = new Federation();
+		fed.setId("123");
+
+		fed.getMembers().add(new FederationMember("abc", "https://abc"));
+		fed.getMembers().add(new FederationMember("xyz", "https://xyz"));
+
+		return fed;
 	}
 }
