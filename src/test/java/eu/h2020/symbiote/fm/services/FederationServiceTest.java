@@ -9,21 +9,21 @@ import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import eu.h2020.symbiote.fm.repositories.FederationRepository;
+import eu.h2020.symbiote.fm.repositories.FederationBackend;
 import eu.h2020.symbiote.model.mim.Federation;
 import eu.h2020.symbiote.model.mim.FederationMember;
 
 @RunWith(SpringRunner.class)
-public class FederationMgmtServiceTest {
+public class FederationServiceTest {
 
 	@Mock
-	private FederationRepository repository;
+	private FederationBackend repository;
 
 	@Mock
 	private FederationAMQPService msgHandler;
 
 	@InjectMocks
-	private final FederationMgmtService service = new FederationMgmtService();
+	private final FederationService service = new FederationService();
 
 	@Before
 	public void setup() throws Exception {

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import eu.h2020.symbiote.fm.services.FederationMgmtService;
+import eu.h2020.symbiote.fm.services.FederationService;
 import eu.h2020.symbiote.model.mim.Federation;
 
 /**
@@ -26,7 +26,7 @@ public class FederationController {
 	private static final Logger logger = LoggerFactory.getLogger(FederationController.class);
 
 	@Autowired
-	private FederationMgmtService federationMgmtService;
+	private FederationService federationMgmtService;
 
 	/**
 	 * Creates or updates federation object referenced by given fedId.

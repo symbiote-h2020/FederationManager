@@ -13,7 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import eu.h2020.symbiote.fm.services.FederationMgmtService;
+import eu.h2020.symbiote.fm.services.FederationService;
 import eu.h2020.symbiote.fm.utils.Utils;
 import eu.h2020.symbiote.model.mim.Federation;
 
@@ -25,7 +25,7 @@ public class FederationControllerTest {
 	private MockMvc mvc;
 
 	@MockBean
-	private FederationMgmtService service;
+	private FederationService service;
 
 	@Test
 	public void testCreateFederation() throws Exception {

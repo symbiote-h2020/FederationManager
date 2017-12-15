@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import eu.h2020.symbiote.fm.repositories.FederationRepository;
+import eu.h2020.symbiote.fm.repositories.FederationBackend;
 import eu.h2020.symbiote.model.mim.Federation;
 import eu.h2020.symbiote.model.mim.FederationMember;
 
@@ -16,11 +16,11 @@ import eu.h2020.symbiote.model.mim.FederationMember;
  *         Handles the workflow if federation is created, updated, deleted.
  */
 @Service
-public class FederationMgmtService {
-	private static final Logger logger = LoggerFactory.getLogger(FederationMgmtService.class);
+public class FederationService {
+	private static final Logger logger = LoggerFactory.getLogger(FederationService.class);
 
 	@Autowired
-	private FederationRepository repository;
+	private FederationBackend federationBackend;
 
 	@Autowired
 	private FederationAMQPService msgHandler;
@@ -38,14 +38,16 @@ public class FederationMgmtService {
 		logger.debug("Processing update {}", fed.getId());
 
 		if (isFederationValid(fed)) {
-			if (repository.exists(fed.getId())) {
+			if (federationBackend.exists(fed.getId())) {
 				msgHandler.publishUpdated(fed);
+				federationBackend.update(fed);
 			} else {
 				msgHandler.publishCreated(fed);
+				federationBackend.create(fed);
 			}
-			repository.save(fed);
+
 		} else {
-			logger.info("Update of federation {} is not relevant for platform {}", fed.getId(), platformId);
+			logger.warn("Update of federation {} is not relevant for platform {}", fed.getId(), platformId);
 		}
 
 	}
@@ -59,11 +61,11 @@ public class FederationMgmtService {
 		logger.debug("Processing delete with id: {}", fedId);
 
 		// only publish federation if relevant for platform
-		if (repository.exists(fedId)) {
-			repository.delete(fedId);
+		if (federationBackend.exists(fedId)) {
+			federationBackend.delete(fedId);
 			msgHandler.publishDeleted(fedId);
 		} else {
-			logger.info("Deletion of federation {} ignored - Federation not relevant for platform", fedId, platformId);
+			logger.warn("Deletion of federation {} ignored - Federation not relevant for platform", fedId, platformId);
 		}
 	}
 
