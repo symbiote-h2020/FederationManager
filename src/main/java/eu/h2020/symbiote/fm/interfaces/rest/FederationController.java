@@ -3,17 +3,21 @@ package eu.h2020.symbiote.fm.interfaces.rest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import eu.h2020.symbiote.fm.services.FederationService;
 import eu.h2020.symbiote.model.mim.Federation;
+import eu.h2020.symbiote.security.commons.exceptions.custom.InvalidArgumentsException;
+import eu.h2020.symbiote.security.communication.payloads.SecurityRequest;
 
 /**
  * @author RuggenthalerC
@@ -26,20 +30,23 @@ public class FederationController {
 	private static final Logger logger = LoggerFactory.getLogger(FederationController.class);
 
 	@Autowired
-	private FederationService federationMgmtService;
+	private FederationService federationService;
 
 	/**
 	 * Creates or updates federation object referenced by given fedId.
 	 * 
 	 * @param fedObj
-	 *            {@link FederationEntity}
+	 *            {@link Federation}
+	 * @param httpHeaders
 	 * @return status {@link HttpStatus}
+	 * @throws Exception
 	 */
 	@PostMapping(value = "/")
-	public ResponseEntity<String> createUpdateFederation(@RequestBody Federation fedObj) {
+	public ResponseEntity<String> createUpdateFederation(@RequestBody Federation fedObj, @RequestHeader HttpHeaders httpHeaders) throws Exception {
+		validateSecurityHeaders(httpHeaders);
 
 		logger.debug("Create/update fed obj with id: {}", fedObj.getId());
-		federationMgmtService.processUpdate(fedObj);
+		federationService.processUpdate(fedObj);
 
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
@@ -48,14 +55,24 @@ public class FederationController {
 	 * Delete federation object with given fedId.
 	 * 
 	 * @param fedId
+	 * @param httpHeaders
 	 * @return status {@link HttpStatus}
 	 */
 	@DeleteMapping(value = "/{fedId}")
-	public ResponseEntity<String> deleteFederation(@PathVariable("fedId") String fedId) {
+	public ResponseEntity<String> deleteFederation(@PathVariable("fedId") String fedId, @RequestHeader HttpHeaders httpHeaders) throws Exception {
+		validateSecurityHeaders(httpHeaders);
 
 		logger.debug("Delete fed obj with id: {}", fedId);
-		federationMgmtService.processDelete(fedId);
+		federationService.processDelete(fedId);
 
 		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	private void validateSecurityHeaders(HttpHeaders httpHeaders) throws InvalidArgumentsException {
+		if (httpHeaders == null)
+			throw new InvalidArgumentsException();
+
+		SecurityRequest securityRequest = new SecurityRequest(httpHeaders.toSingleValueMap());
+		// TODO: checking the securityRequest needed?
 	}
 }

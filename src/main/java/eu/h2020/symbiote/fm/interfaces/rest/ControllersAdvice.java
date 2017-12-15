@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.fasterxml.jackson.core.JsonParseException;
 
+import eu.h2020.symbiote.security.commons.exceptions.custom.InvalidArgumentsException;
+
 /**
  * @author RuggenthalerC
  *
@@ -21,16 +23,23 @@ public class ControllersAdvice {
 
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public String handleInvalidJson(JsonParseException exception) {
-		logger.warn("Input validation failed: {}", exception.getMessage());
+	public String handleInvalidJson(JsonParseException e) {
+		logger.warn("Input validation failed: {}", e.getMessage());
 		return "Input validation failed: Invalid JSON";
+	}
+
+	@ExceptionHandler(InvalidArgumentsException.class)
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	public String handleInvalidSecurityHeaders(InvalidArgumentsException e) {
+		logger.warn("Security header validation failed: {}", e.getMessage());
+		return "Invalid security headers";
 	}
 
 	@ExceptionHandler(Throwable.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-	public String handleServerErrors(Throwable exception) {
+	public String handleServerErrors(Throwable e) {
 
-		logger.error("Unhandled exception caught: {}", exception.getMessage());
+		logger.error("Unhandled exception caught: {}", e.getMessage());
 		return "Internal server error";
 	}
 }
