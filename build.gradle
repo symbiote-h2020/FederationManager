@@ -1,6 +1,7 @@
 buildscript {
     ext {
-        springBootVersion = '1.5.7.RELEASE'
+        springBootVersion = '1.5.8.RELEASE'
+        springCloudVersion = 'Dalston.SR4'
     }
     repositories {
         mavenCentral()
@@ -48,7 +49,7 @@ repositories {
 // Spring related configs
 dependencyManagement {
     imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:Dalston.RELEASE"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
 }
 
@@ -58,7 +59,7 @@ configurations.all {
 }
 
 dependencies {
-	compile('com.github.symbiote-h2020:SymbIoTeLibraries:develop-SNAPSHOT') { changing = true }
+    compile('com.github.symbiote-h2020:SymbIoTeLibraries:4.+') { changing = true }
 	compile('com.github.symbiote-h2020:SymbIoTeSecurity:23.+'){ changing = true }
 
     // Spring
