@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import eu.h2020.symbiote.fm.model.FederationEvent;
 import eu.h2020.symbiote.model.mim.Federation;
 import eu.h2020.symbiote.model.mim.FederationMember;
 

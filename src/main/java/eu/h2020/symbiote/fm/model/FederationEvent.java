@@ -1,4 +1,4 @@
-package eu.h2020.symbiote.fm.repositories;
+package eu.h2020.symbiote.fm.model;
 
 import java.util.Date;
 
@@ -19,17 +19,18 @@ public class FederationEvent {
 		this.eventType = type;
 		this.federationId = fedId;
 		this.platformId = platformId;
+		this.dateEvent = new Date();
 	}
 
 	public enum EventType {
-		FEDERATION_CREATED, FEDERATION_DELETED, PLATFORM_ADDED, PLATFORM_REMOVED
+		FEDERATION_CREATED, FEDERATION_REMOVED, PLATFORM_JOINED, PLATFORM_LEFT
 	}
 
 	@JsonProperty("event_type")
 	private EventType eventType;
 
-	@JsonProperty("event_time")
-	private Date eventTime = new Date();
+	@JsonProperty("date_event")
+	private Date dateEvent;
 
 	@JsonProperty("federation_id")
 	private String federationId;
@@ -45,12 +46,12 @@ public class FederationEvent {
 		this.eventType = eventType;
 	}
 
-	public Date getEventTime() {
-		return this.eventTime;
+	public Date getDateEvent() {
+		return this.dateEvent;
 	}
 
-	public void setEventTime(Date eventTime) {
-		this.eventTime = eventTime;
+	public void setDateEvent(Date eventTime) {
+		this.dateEvent = eventTime;
 	}
 
 	public String getFederationId() {

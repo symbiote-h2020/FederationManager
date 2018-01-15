@@ -9,5 +9,5 @@ import eu.h2020.symbiote.model.mim.Federation;
  * 
  *         MongoDB repository interface for Federation objects providing CRUD operations.
  */
-public interface FederationRepository extends MongoRepository<Federation, String> {
+interface FederationRepository extends MongoRepository<Federation, String> {
 }

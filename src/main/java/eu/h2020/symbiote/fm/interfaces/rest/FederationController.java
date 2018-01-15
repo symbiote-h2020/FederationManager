@@ -32,6 +32,32 @@ public class FederationController {
 	@Autowired
 	private FederationService federationService;
 
+	// private final IComponentSecurityHandler componentSecurityHandler;
+
+	// TODO: where to get it?
+	private String aamAddress;
+
+	// TODO: where to get it?
+	private String clientId;
+
+	// @Value("${aam.security.KEY_STORE_FILE_NAME}")
+	private String keystoreName;
+
+	// @Value("${aam.security.KEY_STORE_PASSWORD}")
+	private String keystorePass;
+
+	// @Value("${aam.deployment.owner.username}")
+	private String componentOwnerName;
+
+	// @Value("${aam.deployment.owner.password}")
+	private String componentOwnerPassword;
+
+	/*
+	 * public FederationController() throws SecurityHandlerException { componentSecurityHandler =
+	 * ComponentSecurityHandlerFactory.getComponentSecurityHandler(aamAddress, this.keystoreName, this.keystorePass, this.clientId, this.aamAddress, false,
+	 * this.componentOwnerName, this.componentOwnerPassword); }
+	 */
+
 	/**
 	 * Creates or updates federation object referenced by given fedId.
 	 * 
@@ -73,6 +99,9 @@ public class FederationController {
 			throw new InvalidArgumentsException();
 
 		SecurityRequest securityRequest = new SecurityRequest(httpHeaders.toSingleValueMap());
-		// TODO: checking the securityRequest needed?
+
+		// TODO: checking the securityRequest needed
+		// Map<String, IAccessPolicy> accessPolicies;
+		// componentSecurityHandler.getSatisfiedPoliciesIdentifiers(accessPolicies, securityRequest);
 	}
 }

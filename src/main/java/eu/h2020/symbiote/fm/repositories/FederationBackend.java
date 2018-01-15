@@ -8,7 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import eu.h2020.symbiote.fm.repositories.FederationEvent.EventType;
+import eu.h2020.symbiote.fm.model.FederationEvent;
+import eu.h2020.symbiote.fm.model.FederationEvent.EventType;
 import eu.h2020.symbiote.model.mim.Federation;
 
 /**
@@ -63,6 +64,42 @@ public class FederationBackend {
 		}
 	}
 
+	/**
+	 * Returns all platform related Events applicable for the given platform ID.
+	 * 
+	 * @param platformId
+	 * @return
+	 */
+	public List<FederationEvent> getPlatformEventsById(String platformId) {
+		return this.fedEventRepo.findEventsByPlatformId(platformId);
+	}
+
+	/**
+	 * Returns all federation related Events applicable for the given federation ID.
+	 * 
+	 * @param fedId
+	 * @return
+	 */
+	public List<FederationEvent> getFederationEventsById(String fedId) {
+		return this.fedEventRepo.findEventsByFederationId(fedId);
+	}
+
+	/**
+	 * Returns all federation related Events applicable for the given list of federation IDs.
+	 * 
+	 * @param fedIdList
+	 * @return
+	 */
+	public List<FederationEvent> getFederationEventsByIds(List<String> fedIdList) {
+		List<FederationEvent> eventList = new ArrayList<>();
+
+		fedIdList.forEach(fedId -> {
+			eventList.addAll(getFederationEventsById(fedId));
+		});
+
+		return eventList;
+	}
+
 	public boolean exists(String fedId) {
 		return fedRepo.exists(fedId);
 	}
@@ -72,7 +109,7 @@ public class FederationBackend {
 		logger.debug("FEDERATION_CREATED: federation {}", newFed.getId());
 
 		newFed.getMembers().forEach(member -> {
-			fedEventRepo.save(new FederationEvent(EventType.PLATFORM_ADDED, newFed.getId(), member.getPlatformId()));
+			fedEventRepo.save(new FederationEvent(EventType.PLATFORM_JOINED, newFed.getId(), member.getPlatformId()));
 			logger.debug("PLATFORM_ADDED: federation {} Platform {}", newFed.getId(), member.getPlatformId());
 		});
 	}
@@ -87,25 +124,25 @@ public class FederationBackend {
 				curPlatforms.remove(member.getPlatformId());
 			} else {
 				// if member is not present in current object
-				fedEventRepo.save(new FederationEvent(EventType.PLATFORM_ADDED, newFed.getId(), member.getPlatformId()));
+				fedEventRepo.save(new FederationEvent(EventType.PLATFORM_JOINED, newFed.getId(), member.getPlatformId()));
 				logger.debug("PLATFORM_ADDED: federation {} Platform {}", newFed.getId(), member.getPlatformId());
 			}
 		});
 
 		// Members not found in newFed -> Platforms removed
 		curPlatforms.forEach(platform -> {
-			fedEventRepo.save(new FederationEvent(EventType.PLATFORM_REMOVED, newFed.getId(), platform));
+			fedEventRepo.save(new FederationEvent(EventType.PLATFORM_LEFT, newFed.getId(), platform));
 			logger.debug("PLATFORM_REMOVED: federation {} Platform {}", newFed.getId(), platform);
 		});
 	}
 
 	private void storeDeleteEvents(Federation curFed) {
 		curFed.getMembers().forEach(member -> {
-			fedEventRepo.save(new FederationEvent(EventType.PLATFORM_REMOVED, curFed.getId(), member.getPlatformId()));
+			fedEventRepo.save(new FederationEvent(EventType.PLATFORM_LEFT, curFed.getId(), member.getPlatformId()));
 			logger.debug("PLATFORM_REMOVED: federation {} Platform {}", curFed.getId(), member.getPlatformId());
 		});
 
-		fedEventRepo.save(new FederationEvent(EventType.FEDERATION_DELETED, curFed.getId(), null));
+		fedEventRepo.save(new FederationEvent(EventType.FEDERATION_REMOVED, curFed.getId(), null));
 		logger.debug("FEDERATION_DELETED: federation {}", curFed.getId());
 	}
 }
