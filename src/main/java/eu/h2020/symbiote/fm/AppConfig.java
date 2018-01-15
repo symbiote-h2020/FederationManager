@@ -1,5 +1,6 @@
 package eu.h2020.symbiote.fm;
 
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -20,17 +21,19 @@ import com.mongodb.MongoClient;
 @EnableMongoRepositories
 class AppConfig extends AbstractMongoConfiguration {
 
-	@Value("${rabbit.exchange.federation}")
-	private String topicFederation;
-
 	@Override
 	protected String getDatabaseName() {
 		return "symbiote-cloud-fm-database";
 	}
 
 	@Bean
-	public TopicExchange federationTopic() {
-		return new TopicExchange(topicFederation);
+	public TopicExchange federationUpdatesTopic(@Value("${rabbit.exchange.federation}") String exchange) {
+		return new TopicExchange(exchange);
+	}
+
+	@Bean
+	public Queue federationHistoryQueue(@Value("${rabbit.queue.federation.get_federation_history}") String queue) {
+		return new Queue(queue);
 	}
 
 	@Override
