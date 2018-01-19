@@ -15,5 +15,6 @@ public class FederationManagerApplicationTests {
 	@Ignore
 	@Test
 	public void contextLoads() {
+		// intentionally empty
 	}
 }
