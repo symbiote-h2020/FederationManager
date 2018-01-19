@@ -6,7 +6,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import eu.h2020.symbiote.fm.model.FederationHistoryResponse;
+import eu.h2020.symbiote.cloud.federation.model.FederationHistoryResponse;
 import eu.h2020.symbiote.fm.services.FederationHistoryService;
 
 /**

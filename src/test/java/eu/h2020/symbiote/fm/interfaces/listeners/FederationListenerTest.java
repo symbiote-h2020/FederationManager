@@ -12,8 +12,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import eu.h2020.symbiote.fm.model.FederationHistory;
-import eu.h2020.symbiote.fm.model.FederationHistoryResponse;
+import eu.h2020.symbiote.cloud.federation.model.FederationHistory;
+import eu.h2020.symbiote.cloud.federation.model.FederationHistoryResponse;
 import eu.h2020.symbiote.fm.services.FederationHistoryService;
 
 @RunWith(SpringRunner.class)
