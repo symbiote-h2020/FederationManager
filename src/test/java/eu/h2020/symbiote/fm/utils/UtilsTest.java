@@ -18,7 +18,6 @@ public class UtilsTest {
 		fed.setId("fedId");
 		fed.setName("fedName");
 		fed.setPublic(false);
-		fed.setSlaDefinition("FedSla");
 
 		List<FederationMember> members = new ArrayList<FederationMember>();
 		members.add(new FederationMember("123", "/url/123"));
@@ -32,7 +31,6 @@ public class UtilsTest {
 		Assert.assertTrue(serialFed.endsWith("}"));
 		Assert.assertTrue(serialFed.contains("\"id\":" + "\"" + fed.getId() + "\""));
 		Assert.assertTrue(serialFed.contains("\"name\":" + "\"" + fed.getName() + "\""));
-		Assert.assertTrue(serialFed.contains("\"slaDefinition\":" + "\"" + fed.getSlaDefinition() + "\""));
 		Assert.assertTrue(serialFed.contains("\"public\":" + fed.isPublic()));
 
 		fed.getMembers().forEach(member -> {
