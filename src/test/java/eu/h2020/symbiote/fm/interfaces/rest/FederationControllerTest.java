@@ -29,6 +29,9 @@ public class FederationControllerTest {
 	@MockBean
 	private FederationService service;
 
+	@MockBean
+	private AuthManager authManager;
+
 	@Test
 	public void testCreateFederation() throws Exception {
 		Federation fed = new Federation();
