@@ -24,14 +24,14 @@ public class ControllersAdvice {
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public String handleInvalidJson(JsonParseException e) {
-		logger.warn("Input validation failed: {}", e.getMessage());
+		logger.warn("Input validation failed", e);
 		return "JSON deserialization failed";
 	}
 
 	@ExceptionHandler(SecurityRequestException.class)
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)
 	public String handleInvalidSecurityHeaders(SecurityRequestException e) {
-		logger.warn("Security header validation failed: {}", e.getMessage());
+		logger.warn("Security header validation failed", e);
 		return "Security Request validation failed";
 	}
 
@@ -39,7 +39,7 @@ public class ControllersAdvice {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public String handleServerErrors(Throwable e) {
 
-		logger.error("Unhandled exception caught: {}", e.getMessage());
+		logger.error("Unhandled exception caught", e);
 		return "Internal server error";
 	}
 }
