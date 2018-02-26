@@ -6,11 +6,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -37,6 +40,7 @@ public class FederationControllerTest {
 		Federation fed = new Federation();
 		fed.setId("123");
 
+		Mockito.when(authManager.validateSecurityHeaders(Mockito.any())).thenReturn(new ResponseEntity<>(null, null, HttpStatus.OK));
 		mvc.perform(post("/fm/federations/").contentType(MediaType.APPLICATION_JSON).content(Utils.convertObjectToJson(fed)).headers(generateHeaders()))
 				.andExpect(status().isOk());
 	}
@@ -47,11 +51,13 @@ public class FederationControllerTest {
 		Federation fed = new Federation();
 		fed.setId("123");
 
+		Mockito.when(authManager.validateSecurityHeaders(Mockito.any())).thenReturn(new ResponseEntity<>(null, null, HttpStatus.OK));
 		mvc.perform(delete("/fm/federations/123").headers(generateHeaders())).andExpect(status().isOk());
 	}
 
 	@Test
 	public void testDeleteFederation() throws Exception {
+		Mockito.when(authManager.validateSecurityHeaders(Mockito.any())).thenReturn(new ResponseEntity<>(null, null, HttpStatus.OK));
 		mvc.perform(delete("/fm/federations/123").headers(generateHeaders())).andExpect(status().isOk());
 	}
 

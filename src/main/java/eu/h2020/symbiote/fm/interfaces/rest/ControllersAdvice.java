@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.fasterxml.jackson.core.JsonParseException;
 
-import eu.h2020.symbiote.fm.interfaces.rest.AuthManager.SecurityRequestException;
-
 /**
  * @author RuggenthalerC
  *
@@ -26,13 +24,6 @@ public class ControllersAdvice {
 	public String handleInvalidJson(JsonParseException e) {
 		logger.warn("Input validation failed", e);
 		return "JSON deserialization failed";
-	}
-
-	@ExceptionHandler(SecurityRequestException.class)
-	@ResponseStatus(HttpStatus.UNAUTHORIZED)
-	public String handleInvalidSecurityHeaders(SecurityRequestException e) {
-		logger.warn("Security header validation failed", e);
-		return "Security Request validation failed";
 	}
 
 	@ExceptionHandler(Throwable.class)

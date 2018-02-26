@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import eu.h2020.symbiote.fm.interfaces.rest.AuthManager.SecurityRequestException;
 import eu.h2020.symbiote.fm.services.FederationService;
 import eu.h2020.symbiote.model.mim.Federation;
 
@@ -44,14 +43,15 @@ public class FederationController {
 	 * @throws Exception
 	 */
 	@PostMapping(value = "/")
-	public ResponseEntity<String> createUpdateFederation(@RequestBody Federation fedObj, @RequestHeader HttpHeaders httpHeaders)
-			throws SecurityRequestException {
-		authManager.validateSecurityHeaders(httpHeaders);
+	public ResponseEntity<?> createUpdateFederation(@RequestBody Federation fedObj, @RequestHeader HttpHeaders httpHeaders) {
+		ResponseEntity<?> resp = authManager.validateSecurityHeaders(httpHeaders);
 
-		logger.debug("Create/update fed obj with id: {}", fedObj.getId());
-		federationService.processUpdate(fedObj);
+		if (HttpStatus.OK.equals(resp.getStatusCode())) {
+			logger.debug("Create/update fed obj with id: {}", fedObj.getId());
+			federationService.processUpdate(fedObj);
+		}
 
-		return new ResponseEntity<>(HttpStatus.OK);
+		return resp;
 	}
 
 	/**
@@ -62,13 +62,14 @@ public class FederationController {
 	 * @return status {@link HttpStatus}
 	 */
 	@DeleteMapping(value = "/{fedId}")
-	public ResponseEntity<String> deleteFederation(@PathVariable("fedId") String fedId, @RequestHeader HttpHeaders httpHeaders)
-			throws SecurityRequestException {
-		authManager.validateSecurityHeaders(httpHeaders);
+	public ResponseEntity<?> deleteFederation(@PathVariable("fedId") String fedId, @RequestHeader HttpHeaders httpHeaders) {
+		ResponseEntity<?> resp = authManager.validateSecurityHeaders(httpHeaders);
 
-		logger.debug("Delete fed obj with id: {}", fedId);
-		federationService.processDelete(fedId);
+		if (HttpStatus.OK.equals(resp.getStatusCode())) {
+			logger.debug("Delete fed obj with id: {}", fedId);
+			federationService.processDelete(fedId);
+		}
 
-		return new ResponseEntity<>(HttpStatus.OK);
+		return resp;
 	}
 }
