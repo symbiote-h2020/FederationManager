@@ -3,6 +3,7 @@ package eu.h2020.symbiote.fm.interfaces.rest;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,13 +16,12 @@ import org.springframework.stereotype.Component;
 
 import eu.h2020.symbiote.security.ComponentSecurityHandlerFactory;
 import eu.h2020.symbiote.security.accesspolicies.IAccessPolicy;
-import eu.h2020.symbiote.security.accesspolicies.common.singletoken.SingleTokenAccessPolicy;
+import eu.h2020.symbiote.security.accesspolicies.common.singletoken.ComponentHomeTokenAccessPolicy;
 import eu.h2020.symbiote.security.commons.SecurityConstants;
 import eu.h2020.symbiote.security.commons.exceptions.custom.InvalidArgumentsException;
 import eu.h2020.symbiote.security.commons.exceptions.custom.SecurityHandlerException;
 import eu.h2020.symbiote.security.communication.payloads.SecurityRequest;
 import eu.h2020.symbiote.security.handler.IComponentSecurityHandler;
-import io.jsonwebtoken.Claims;
 
 /**
  * @author RuggenthalerC
@@ -69,8 +69,13 @@ public class AuthManager {
 
 		try {
 			SecurityRequest securityRequest = new SecurityRequest(httpHeaders.toSingleValueMap());
-			securityHandler.getSatisfiedPoliciesIdentifiers(buildPolicies(), securityRequest);
-			return buildResponseEntity(HttpStatus.OK, new HttpHeaders(), securityHandler.generateServiceResponse());
+			Set<String> sadisfiedPolicies = securityHandler.getSatisfiedPoliciesIdentifiers(buildPolicies(), securityRequest);
+
+			if (!sadisfiedPolicies.isEmpty()) {
+				return buildResponseEntity(HttpStatus.OK, new HttpHeaders(), securityHandler.generateServiceResponse());
+			}
+
+			return buildResponseEntity(HttpStatus.UNAUTHORIZED, new HttpHeaders(), securityHandler.generateServiceResponse());
 		} catch (InvalidArgumentsException | SecurityHandlerException ex) {
 			logger.warn("Caught exception while verifying security headers", ex);
 			return buildResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, new HttpHeaders(), ex.getMessage());
@@ -79,9 +84,14 @@ public class AuthManager {
 
 	private Map<String, IAccessPolicy> buildPolicies() {
 		Map<String, IAccessPolicy> policies = new HashMap<>();
-		Map<String, String> requiredClaims = new HashMap<>();
-		requiredClaims.put(Claims.ISSUER, SecurityConstants.CORE_AAM_INSTANCE_ID);
-		policies.put("SingleTokenAccessPolicy", new SingleTokenAccessPolicy(requiredClaims));
+
+		ComponentHomeTokenAccessPolicy policy;
+		try {
+			policy = new ComponentHomeTokenAccessPolicy(SecurityConstants.CORE_AAM_INSTANCE_ID, "administration", new HashMap<>());
+			policies.put("administrationPolicy", policy);
+		} catch (InvalidArgumentsException e) {
+			logger.warn("buildPolicies failed", e);
+		}
 		return policies;
 	}
 
