@@ -37,12 +37,23 @@ public class AuthManager {
 	private final boolean isSecurityEnabled;
 
 	@Autowired
-	public AuthManager(@Value("${aam.deployment.owner.username") String componentOwnerName,
-			@Value("${aam.deployment.owner.password}") String componentOwnerPassword, @Value("${symbIoTe.localaam.url}") String aamAddress,
-			@Value("${symbIoTe.fm.clientId}") String clientId, @Value("${aam.security.KEY_STORE_FILE_NAME}") String keystoreName,
-			@Value("${aam.security.KEY_STORE_PASSWORD}") String keystorePass, @Value("${symbiote.fm.security.enabled}") boolean isSecurityEnabled)
+	public AuthManager(@Value("${symbIoTe.component.username}") String componentOwnerName,
+					   @Value("${symbIoTe.component.password}") String componentOwnerPassword,
+                       @Value("${symbIoTe.localaam.url}") String aamAddress,
+                       @Value("${symbIoTe.component.clientId}") String clientId,
+                       @Value("${symbIoTe.component.keystore.path}") String keystoreName,
+                       @Value("${symbIoTe.component.keystore.password}") String keystorePass,
+                       @Value("${symbIoTe.aam.integration}") boolean isSecurityEnabled)
 			throws SecurityHandlerException {
 		this.isSecurityEnabled = isSecurityEnabled;
+
+		logger.debug("componentOwnerName = " + componentOwnerName);
+        logger.debug("componentOwnerPassword = " + componentOwnerPassword);
+        logger.debug("aamAddress = " + aamAddress);
+        logger.debug("clientId = " + clientId);
+        logger.debug("keystoreName = " + keystoreName);
+        logger.debug("keystorePass = " + keystorePass);
+        logger.debug("isSecurityEnabled = " + isSecurityEnabled);
 
 		if (isSecurityEnabled) {
 			securityHandler = ComponentSecurityHandlerFactory.getComponentSecurityHandler(keystoreName, keystorePass, clientId, aamAddress, componentOwnerName,

@@ -44,8 +44,10 @@ class AppConfig extends AbstractMongoConfiguration {
 	}
 
 	@Bean
-	public TopicExchange federationUpdatesTopic(@Value("${rabbit.exchange.federation}") String exchange) {
-		return new TopicExchange(exchange);
+	public TopicExchange federationUpdatesTopic(@Value("${rabbit.exchange.federation}") String exchange,
+                                                @Value("${rabbit.exchange.federation.durable}") Boolean durable,
+                                                @Value("${rabbit.exchange.federation.autodelete}") Boolean autoDelete) {
+		return new TopicExchange(exchange, durable, autoDelete);
 	}
 
 	@Bean
