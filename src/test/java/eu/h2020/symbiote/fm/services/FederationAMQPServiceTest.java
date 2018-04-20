@@ -43,7 +43,7 @@ public class FederationAMQPServiceTest {
 
 		Mockito.verify(federationTopic, Mockito.times(1)).getName();
 		Mockito.verify(template, Mockito.times(1)).convertAndSend(Mockito.eq("symbIoTe.federation"), Mockito.eq("symbIoTe.federation.created"),
-				Mockito.eq(Utils.convertObjectToJson(fed)));
+				Mockito.eq(fed));
 	}
 
 	@Test
@@ -53,7 +53,7 @@ public class FederationAMQPServiceTest {
 		msgHandler.publishUpdated(fed);
 
 		Mockito.verify(template, Mockito.times(1)).convertAndSend(Mockito.eq("symbIoTe.federation"), Mockito.eq("symbIoTe.federation.changed"),
-				Mockito.eq(Utils.convertObjectToJson(fed)));
+				Mockito.eq(fed));
 	}
 
 	@Test

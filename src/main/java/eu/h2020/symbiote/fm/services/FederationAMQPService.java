@@ -69,14 +69,11 @@ public class FederationAMQPService {
 	 * Sends the given message to topic with given routing key.
 	 * 
 	 * @param routingKey
-	 * @param msg
+	 * @param fedObj
 	 */
 	private void send(String routingKey, Federation fedObj) {
-		try {
-			send(routingKey, Utils.convertObjectToJson(fedObj));
-		} catch (JsonProcessingException e) {
-			logger.error("JSON conversion failed", e);
-		}
+		logger.debug("Message published with routingkey: {} and msg: {}", routingKey, fedObj);
+		template.convertAndSend(federationTopic.getName(), routingKey, fedObj);
 	}
 
 	/**
