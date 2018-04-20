@@ -1,17 +1,15 @@
 package eu.h2020.symbiote.fm.services;
 
+import eu.h2020.symbiote.model.mim.Federation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-
-import eu.h2020.symbiote.fm.utils.Utils;
-import eu.h2020.symbiote.model.mim.Federation;
 
 /**
  * @author RuggenthalerC
@@ -69,14 +67,11 @@ public class FederationAMQPService {
 	 * Sends the given message to topic with given routing key.
 	 * 
 	 * @param routingKey
-	 * @param msg
+	 * @param fedObj
 	 */
 	private void send(String routingKey, Federation fedObj) {
-		try {
-			send(routingKey, Utils.convertObjectToJson(fedObj));
-		} catch (JsonProcessingException e) {
-			logger.error("JSON conversion failed", e);
-		}
+		logger.debug("Message published with routingkey: {} and msg: {}", routingKey, fedObj);
+		template.convertAndSend(federationTopic.getName(), routingKey, fedObj);
 	}
 
 	/**
@@ -87,7 +82,8 @@ public class FederationAMQPService {
 	 */
 	private void send(String routingKey, String msg) {
 		logger.debug("Message published with routingkey: {} and msg: {}", routingKey, msg);
-		template.convertAndSend(federationTopic.getName(), routingKey, msg);
+		Message message = new Message(msg.getBytes(), new MessageProperties());
+		template.send(federationTopic.getName(), routingKey, message);
 	}
 
 }
