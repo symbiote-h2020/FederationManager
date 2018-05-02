@@ -14,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -24,6 +25,7 @@ import eu.h2020.symbiote.security.commons.SecurityConstants;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(FederationController.class)
+@TestPropertySource(locations = "classpath:test.properties")
 public class FederationControllerTest {
 
 	@Autowired
