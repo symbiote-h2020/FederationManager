@@ -16,6 +16,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 public class FederationManagerApplication {
 
 	public static void main(String[] args) {
+		WaitForPort.waitForServices(WaitForPort.findProperty("SPRING_BOOT_WAIT_FOR_SERVICES"));
 		SpringApplication.run(FederationManagerApplication.class, args);
     }
 }
