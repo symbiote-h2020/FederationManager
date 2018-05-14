@@ -18,8 +18,12 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
 import eu.h2020.symbiote.fm.services.FederationService;
-import eu.h2020.symbiote.fm.utils.Utils;
 import eu.h2020.symbiote.model.mim.Federation;
 import eu.h2020.symbiote.security.commons.SecurityConstants;
 
@@ -43,7 +47,7 @@ public class FederationControllerTest {
 		fed.setId("123");
 
 		Mockito.when(authManager.validateSecurityHeaders(Mockito.any())).thenReturn(new ResponseEntity<>(null, null, HttpStatus.OK));
-		mvc.perform(post("/fm/federations/").contentType(MediaType.APPLICATION_JSON).content(Utils.convertObjectToJson(fed)).headers(generateHeaders()))
+		mvc.perform(post("/fm/federations/").contentType(MediaType.APPLICATION_JSON).content(convertObjectToJson(fed)).headers(generateHeaders()))
 				.andExpect(status().isOk());
 	}
 
@@ -61,6 +65,13 @@ public class FederationControllerTest {
 	public void testDeleteFederation() throws Exception {
 		Mockito.when(authManager.validateSecurityHeaders(Mockito.any())).thenReturn(new ResponseEntity<>(null, null, HttpStatus.OK));
 		mvc.perform(delete("/fm/federations/123").headers(generateHeaders())).andExpect(status().isOk());
+	}
+
+	private String convertObjectToJson(Object obj) throws JsonProcessingException {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(SerializationFeature.INDENT_OUTPUT, false);
+		mapper.setSerializationInclusion(Include.NON_EMPTY);
+		return mapper.writeValueAsString(obj);
 	}
 
 	private HttpHeaders generateHeaders() {

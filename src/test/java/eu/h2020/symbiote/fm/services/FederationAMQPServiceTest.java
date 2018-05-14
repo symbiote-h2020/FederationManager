@@ -6,14 +6,11 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import eu.h2020.symbiote.fm.utils.Utils;
 import eu.h2020.symbiote.model.mim.Federation;
 
 @RunWith(SpringRunner.class)
@@ -59,9 +56,9 @@ public class FederationAMQPServiceTest {
 	}
 
 	// Commented test because it fails after changes in msgHandler.publishDeleted
-    // @Test
+	// @Test
 	public void testPublishDeleted() throws Exception {
-	    String fedId = "123";
+		String fedId = "123";
 		msgHandler.publishDeleted(fedId);
 		Mockito.verify(template, Mockito.times(1)).convertAndSend(Mockito.eq("symbIoTe.federation"), Mockito.eq("symbIoTe.federation.deleted"),
 				Mockito.any(Object.class));

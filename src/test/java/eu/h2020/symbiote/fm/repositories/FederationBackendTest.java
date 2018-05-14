@@ -3,12 +3,16 @@ package eu.h2020.symbiote.fm.repositories;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import com.google.common.collect.Lists;
 
 import eu.h2020.symbiote.fm.model.FederationEvent;
 import eu.h2020.symbiote.model.mim.Federation;
@@ -46,6 +50,14 @@ public class FederationBackendTest {
 
 		Mockito.verify(fedRepo, Mockito.times(1)).save(fed);
 		Mockito.verify(fedEventRepo, Mockito.times(3)).save((FederationEvent) Mockito.any());
+	}
+
+	@Test
+	public void testGetFederationEventsByIds() throws Exception {
+		Mockito.when(fedEventRepo.findEventsByFederationId("123")).thenReturn(Lists.newArrayList(new FederationEvent()));
+
+		List<FederationEvent> lst = service.getFederationEventsByIds(Lists.newArrayList("123"));
+		assertFalse(lst.isEmpty());
 	}
 
 	@Test
