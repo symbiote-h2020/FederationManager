@@ -54,8 +54,8 @@ public class FederationBackend {
 	/**
 	 * Create and store federation object
 	 * 
-	 * @param fed
-	 *            {@link Federation}
+	 * @param fedId
+	 *            federation id
 	 */
 	public void delete(String fedId) {
 		if (exists(fedId)) {
@@ -68,7 +68,8 @@ public class FederationBackend {
 	 * Returns all platform related Events applicable for the given platform ID.
 	 * 
 	 * @param platformId
-	 * @return
+	 *            platform id
+	 * @return list of {@link FederationEvent}
 	 */
 	public List<FederationEvent> getPlatformEventsById(String platformId) {
 		return this.fedEventRepo.findEventsByPlatformId(platformId);
@@ -78,7 +79,8 @@ public class FederationBackend {
 	 * Returns all federation related Events applicable for the given federation ID.
 	 * 
 	 * @param fedId
-	 * @return
+	 *            federation ID
+	 * @return list of {@link FederationEvent}
 	 */
 	public List<FederationEvent> getFederationEventsById(String fedId) {
 		return this.fedEventRepo.findEventsByFederationId(fedId);
@@ -88,7 +90,8 @@ public class FederationBackend {
 	 * Returns all federation related Events applicable for the given list of federation IDs.
 	 * 
 	 * @param fedIdList
-	 * @return
+	 *            listo of federation IDs
+	 * @return list of {@link FederationEvent}
 	 */
 	public List<FederationEvent> getFederationEventsByIds(List<String> fedIdList) {
 		List<FederationEvent> eventList = new ArrayList<>();
@@ -100,6 +103,13 @@ public class FederationBackend {
 		return eventList;
 	}
 
+	/**
+	 * validates if entry exists.
+	 * 
+	 * @param fedId
+	 *            federation id
+	 * @return boolean if entry found.
+	 */
 	public boolean exists(String fedId) {
 		return fedRepo.exists(fedId);
 	}

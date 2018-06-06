@@ -1,6 +1,5 @@
 package eu.h2020.symbiote.fm.services;
 
-import eu.h2020.symbiote.model.mim.Federation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
@@ -10,6 +9,8 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import eu.h2020.symbiote.model.mim.Federation;
 
 /**
  * @author RuggenthalerC
@@ -40,6 +41,7 @@ public class FederationAMQPService {
 	 * Publish created federation object to topic.
 	 * 
 	 * @param fedObj
+	 *            {@link Federation}
 	 */
 	public void publishCreated(Federation fedObj) {
 		send(routingKeyFederationCreated, fedObj);
@@ -49,6 +51,7 @@ public class FederationAMQPService {
 	 * Publish updated federation object to topic.
 	 * 
 	 * @param fedObj
+	 *            {@link Federation}
 	 */
 	public void publishUpdated(Federation fedObj) {
 		send(routingKeyFederationChanged, fedObj);
@@ -58,6 +61,7 @@ public class FederationAMQPService {
 	 * Publish deleted federation Id to topic.
 	 * 
 	 * @param fedId
+	 *            federation ID
 	 */
 	public void publishDeleted(String fedId) {
 		send(routingKeyFederationDeleted, fedId);
@@ -67,7 +71,9 @@ public class FederationAMQPService {
 	 * Sends the given message to topic with given routing key.
 	 * 
 	 * @param routingKey
+	 *            routing key
 	 * @param fedObj
+	 *            {@link Federation}
 	 */
 	private void send(String routingKey, Federation fedObj) {
 		logger.debug("Message published with routingkey: {} and msg: {}", routingKey, fedObj);
@@ -78,7 +84,9 @@ public class FederationAMQPService {
 	 * Sends the given message to topic with given routing key.
 	 * 
 	 * @param routingKey
+	 *            routing key
 	 * @param msg
+	 *            content as string
 	 */
 	private void send(String routingKey, String msg) {
 		logger.debug("Message published with routingkey: {} and msg: {}", routingKey, msg);

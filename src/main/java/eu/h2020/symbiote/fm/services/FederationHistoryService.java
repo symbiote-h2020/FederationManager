@@ -30,7 +30,8 @@ public class FederationHistoryService {
 	 * Returning all associated Federation and platform events for given platform ID
 	 * 
 	 * @param platformId
-	 * @return
+	 *            platform ID
+	 * @return list of {@link FederationHistory}
 	 */
 	public List<FederationHistory> getFederationHistoriesById(String platformId) {
 		// XXX: Assuming right now that federation and platforms can only join+leave once!

@@ -8,9 +8,9 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 /**
  * @author RuggenthalerC
  *
- *         Main entry point to start spring boot application.
+ *         Main entry point to start Federation Manager.
  */
-@EnableDiscoveryClient    
+@EnableDiscoveryClient
 @EnableAutoConfiguration
 @SpringBootApplication
 public class FederationManagerApplication {
@@ -18,5 +18,5 @@ public class FederationManagerApplication {
 	public static void main(String[] args) {
 		WaitForPort.waitForServices(WaitForPort.findProperty("SPRING_BOOT_WAIT_FOR_SERVICES"));
 		SpringApplication.run(FederationManagerApplication.class, args);
-    }
+	}
 }

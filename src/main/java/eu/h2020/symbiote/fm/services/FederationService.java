@@ -32,7 +32,7 @@ public class FederationService {
 	 * Handle process when federation object is created/updated.
 	 * 
 	 * @param fed
-	 *            {@link FederationEntity}
+	 *            {@link Federation}
 	 */
 	public void processUpdate(Federation fed) {
 		logger.debug("Processing update {}", fed.getId());
@@ -56,6 +56,7 @@ public class FederationService {
 	 * Handle process if federation was deleted / removed.
 	 * 
 	 * @param fedId
+	 *            federation ID
 	 */
 	public void processDelete(String fedId) {
 		logger.debug("Processing delete with id: {}", fedId);

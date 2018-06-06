@@ -38,22 +38,14 @@ public class AuthManager {
 
 	@Autowired
 	public AuthManager(@Value("${symbIoTe.component.username}") String componentOwnerName,
-					   @Value("${symbIoTe.component.password}") String componentOwnerPassword,
-                       @Value("${symbIoTe.localaam.url}") String aamAddress,
-                       @Value("${symbIoTe.component.clientId}") String clientId,
-                       @Value("${symbIoTe.component.keystore.path}") String keystoreName,
-                       @Value("${symbIoTe.component.keystore.password}") String keystorePass,
-                       @Value("${symbIoTe.aam.integration}") boolean isSecurityEnabled)
+			@Value("${symbIoTe.component.password}") String componentOwnerPassword, @Value("${symbIoTe.localaam.url}") String aamAddress,
+			@Value("${symbIoTe.component.clientId}") String clientId, @Value("${symbIoTe.component.keystore.path}") String keystoreName,
+			@Value("${symbIoTe.component.keystore.password}") String keystorePass, @Value("${symbIoTe.aam.integration}") boolean isSecurityEnabled)
 			throws SecurityHandlerException {
 		this.isSecurityEnabled = isSecurityEnabled;
 
-		logger.debug("componentOwnerName = " + componentOwnerName);
-        logger.debug("componentOwnerPassword = " + componentOwnerPassword);
-        logger.debug("aamAddress = " + aamAddress);
-        logger.debug("clientId = " + clientId);
-        logger.debug("keystoreName = " + keystoreName);
-        logger.debug("keystorePass = " + keystorePass);
-        logger.debug("isSecurityEnabled = " + isSecurityEnabled);
+		logger.debug("componentOwnerName={}; componentOwnerPassword={}; aamAddress={}; clientId={}; keystoreName={}; keystorePass={}; isSecurityEnabled={}",
+				componentOwnerName, componentOwnerPassword, aamAddress, clientId, keystoreName, keystorePass, isSecurityEnabled);
 
 		if (isSecurityEnabled) {
 			securityHandler = ComponentSecurityHandlerFactory.getComponentSecurityHandler(keystoreName, keystorePass, clientId, aamAddress, componentOwnerName,
@@ -67,6 +59,7 @@ public class AuthManager {
 	 * Validate given http header to verify that issuer is core.
 	 * 
 	 * @param httpHeaders
+	 *            security parameters
 	 * @return ResponseEntity (@see ResponseEntity)
 	 */
 	public ResponseEntity<?> validateSecurityHeaders(HttpHeaders httpHeaders) {

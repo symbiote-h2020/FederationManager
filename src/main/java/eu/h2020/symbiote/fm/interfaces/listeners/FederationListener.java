@@ -25,7 +25,8 @@ public class FederationListener {
 	 * RMQ listener to consume federation history requests for given platformIds.
 	 * 
 	 * @param platformId
-	 * @return FederationHistory
+	 *            platform ID
+	 * @return FederationHistory response
 	 */
 	@RabbitListener(queues = "${rabbit.queue.federation.get_federation_history}")
 	public FederationHistoryResponse getFederationHistoryByPlatformId(String platformId) {
