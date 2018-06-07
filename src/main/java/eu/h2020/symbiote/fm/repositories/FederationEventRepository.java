@@ -14,9 +14,9 @@ import eu.h2020.symbiote.fm.model.FederationEvent;
  */
 interface FederationEventRepository extends MongoRepository<FederationEvent, String> {
 
-	@Query("{'platform_id': ?0}")
+	@Query("{'platformId': ?0}")
 	List<FederationEvent> findEventsByPlatformId(String platformId);
 
-	@Query("{'federation_id': ?0}")
+	@Query("{'federationId': ?0}")
 	List<FederationEvent> findEventsByFederationId(String federationId);
 }
