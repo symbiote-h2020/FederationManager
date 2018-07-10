@@ -1,5 +1,6 @@
 package eu.h2020.symbiote.fm.repositories;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -50,6 +51,16 @@ public class FederationBackendTest {
 
 		Mockito.verify(fedRepo, Mockito.times(1)).save(fed);
 		Mockito.verify(fedEventRepo, Mockito.times(3)).save((FederationEvent) Mockito.any());
+	}
+
+	@Test
+	public void testGetAllFederations() throws Exception {
+		Mockito.when(fedRepo.findAll()).thenReturn(Lists.newArrayList(new Federation(), new Federation()));
+
+		List<Federation> lst = service.findAllFederations();
+
+		Mockito.verify(fedRepo, Mockito.times(1)).findAll();
+		assertEquals(2, lst.size());
 	}
 
 	@Test

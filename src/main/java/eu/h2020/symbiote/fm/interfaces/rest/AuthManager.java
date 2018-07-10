@@ -44,8 +44,8 @@ public class AuthManager {
 			throws SecurityHandlerException {
 		this.isSecurityEnabled = isSecurityEnabled;
 
-		logger.debug("componentOwnerName={}; componentOwnerPassword={}; aamAddress={}; clientId={}; keystoreName={}; keystorePass={}; isSecurityEnabled={}",
-				componentOwnerName, componentOwnerPassword, aamAddress, clientId, keystoreName, keystorePass, isSecurityEnabled);
+		logger.debug("componentOwnerName={}; aamAddress={}; clientId={}; keystoreName={}; isSecurityEnabled={}", componentOwnerName, aamAddress, clientId,
+				keystoreName, isSecurityEnabled);
 
 		if (isSecurityEnabled) {
 			securityHandler = ComponentSecurityHandlerFactory.getComponentSecurityHandler(keystoreName, keystorePass, clientId, aamAddress, componentOwnerName,
@@ -102,5 +102,51 @@ public class AuthManager {
 	private ResponseEntity<?> buildResponseEntity(HttpStatus httpStatus, HttpHeaders httpHeaders, String securityResponse) {
 		httpHeaders.put(SecurityConstants.SECURITY_RESPONSE_HEADER, Arrays.asList(securityResponse));
 		return new ResponseEntity<>(null, httpHeaders, httpStatus);
+	}
+
+	/**
+	 * Generates Security headers for request.
+	 * 
+	 * @return {@link HttpHeaders}
+	 */
+	public HttpHeaders generateRequestHeaders() {
+		HttpHeaders httpHeaders = new HttpHeaders();
+
+		if (isSecurityEnabled) {
+			try {
+				SecurityRequest securityRequest = securityHandler.generateSecurityRequestUsingLocalCredentials();
+				securityRequest.getSecurityRequestHeaderParams().entrySet().forEach(entry -> {
+					httpHeaders.add(entry.getKey(), entry.getValue());
+				});
+			} catch (Exception e) {
+				logger.warn("Security request generation failed", e);
+			}
+		}
+
+		return httpHeaders;
+	}
+
+	/**
+	 * Verify security headers in response.
+	 * 
+	 * @param componentId
+	 *            component sender
+	 * @param platformId
+	 *            platform ID or SecurityConstants.CORE_AAM_INSTANCE_ID for core.
+	 * @param httpHeaders
+	 *            received {@link HttpHeaders}
+	 * @return true if verified else false
+	 */
+	public boolean verifyResponseHeaders(String componentId, String platformId, HttpHeaders httpHeaders) {
+		boolean isResponseVerified = false;
+
+		try {
+			String resp = httpHeaders.get(SecurityConstants.SECURITY_RESPONSE_HEADER).get(0);
+			isResponseVerified = securityHandler.isReceivedServiceResponseVerified(resp, componentId, platformId);
+		} catch (Exception e) {
+			logger.warn("Exception during verifying service response", e);
+		}
+
+		return isResponseVerified;
 	}
 }

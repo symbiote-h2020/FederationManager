@@ -8,10 +8,12 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * Created by mateuszl on 30.09.2016.
@@ -44,9 +46,13 @@ class AppConfig extends AbstractMongoConfiguration {
 	}
 
 	@Bean
+	public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
+		return restTemplateBuilder.setConnectTimeout(1 * 1000).setReadTimeout(10 * 1000).build();
+	}
+
+	@Bean
 	public TopicExchange federationUpdatesTopic(@Value("${rabbit.exchange.federation}") String exchange,
-                                                @Value("${rabbit.exchange.federation.durable}") Boolean durable,
-                                                @Value("${rabbit.exchange.federation.autodelete}") Boolean autoDelete) {
+			@Value("${rabbit.exchange.federation.durable}") Boolean durable, @Value("${rabbit.exchange.federation.autodelete}") Boolean autoDelete) {
 		return new TopicExchange(exchange, durable, autoDelete);
 	}
 

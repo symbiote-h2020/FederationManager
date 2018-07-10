@@ -114,6 +114,15 @@ public class FederationBackend {
 		return fedRepo.exists(fedId);
 	}
 
+	/**
+	 * Returns all current federations stored in DB.
+	 * 
+	 * @return List of federations.
+	 */
+	public List<Federation> findAllFederations() {
+		return this.fedRepo.findAll();
+	}
+
 	private void storeCreateEvents(Federation newFed) {
 		fedEventRepo.save(new FederationEvent(EventType.FEDERATION_CREATED, newFed.getId(), null));
 		logger.debug("FEDERATION_CREATED: federation {}", newFed.getId());
