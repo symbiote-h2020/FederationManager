@@ -41,6 +41,9 @@ public class FederationControllerTest {
 	@MockBean
 	private AuthManager authManager;
 
+	@MockBean
+	private DataSynchronization dataSynchronization;
+
 	@Test
 	public void testCreateFederation() throws Exception {
 		Federation fed = new Federation();
