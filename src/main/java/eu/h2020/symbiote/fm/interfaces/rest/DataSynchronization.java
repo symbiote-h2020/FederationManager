@@ -1,11 +1,9 @@
 package eu.h2020.symbiote.fm.interfaces.rest;
 
-import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import eu.h2020.symbiote.security.commons.ComponentIdentifiers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 import eu.h2020.symbiote.fm.repositories.FederationBackend;
 import eu.h2020.symbiote.fm.services.FederationService;
 import eu.h2020.symbiote.model.mim.Federation;
+import eu.h2020.symbiote.security.commons.ComponentIdentifiers;
 import eu.h2020.symbiote.security.commons.SecurityConstants;
 
 /**
@@ -32,40 +31,37 @@ import eu.h2020.symbiote.security.commons.SecurityConstants;
 public class DataSynchronization {
 	private static final Logger logger = LoggerFactory.getLogger(DataSynchronization.class);
 
+	@Value("${symbIoTe.core.administration.url}")
 	private String administrationURL;
+
+	@Value("${platform.id}")
 	private String platformId;
+
+	@Autowired
 	private AuthManager authManager;
+
+	@Autowired
 	private RestTemplate restTemplate;
+
+	@Autowired
 	private FederationService federationService;
+
+	@Autowired
 	private FederationBackend federationBackend;
 
-    @Autowired
-    public DataSynchronization(@Value("${symbIoTe.core.administration.url}") String administrationURL,
-                               @Value("${platform.id}") String platformId,
-                               AuthManager authManager,
-                               RestTemplate restTemplate,
-                               FederationService federationService,
-                               FederationBackend federationBackend) {
-        this.administrationURL = administrationURL.replace("coreInterface/", "");
-        this.platformId = platformId;
-        this.authManager = authManager;
-        this.restTemplate = restTemplate;
-        this.federationService = federationService;
-        this.federationBackend = federationBackend;
-    }
-
-    /**
+	/**
 	 * Load all current federation objects for platform.
 	 */
 	public void synchronizeFederationDB() {
 		try {
-			String url = administrationURL + "?platformId=" + platformId;
-            logger.debug("url = " + url);
+			String url = administrationURL.replace("coreInterface/", "") + "?platformId=" + platformId;
 
-			ResponseEntity<List<Federation>> resp = restTemplate.exchange(url, HttpMethod.POST,
-					new HttpEntity<>(authManager.generateRequestHeaders()), new ParameterizedTypeReference<List<Federation>>() {});
+			ResponseEntity<List<Federation>> resp = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(authManager.generateRequestHeaders()),
+					new ParameterizedTypeReference<List<Federation>>() {
+					});
 
-			if (!authManager.verifyResponseHeaders(ComponentIdentifiers.ADMINISTRATION, SecurityConstants.CORE_AAM_INSTANCE_ID, resp.getHeaders())) {
+			if (resp == null
+					|| !authManager.verifyResponseHeaders(ComponentIdentifiers.ADMINISTRATION, SecurityConstants.CORE_AAM_INSTANCE_ID, resp.getHeaders())) {
 				logger.warn("Response Header verification failed.");
 				return;
 			}
