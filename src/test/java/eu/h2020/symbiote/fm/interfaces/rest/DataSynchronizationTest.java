@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -78,8 +79,8 @@ public class DataSynchronizationTest {
 		coreList.add(f2);
 		coreList.add(f4b);
 
-		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.any(HttpMethod.class), Mockito.any(HttpEntity.class), Mockito.any(Class.class)))
-				.thenReturn(new ResponseEntity<List>(coreList, HttpStatus.OK));
+		Mockito.when(restTemplate.exchange(Mockito.anyString(), Mockito.any(HttpMethod.class), Mockito.any(HttpEntity.class),
+				Mockito.any(ParameterizedTypeReference.class))).thenReturn(new ResponseEntity<List<Federation>>(coreList, HttpStatus.OK));
 
 		Mockito.when(federationBackend.findAllFederations()).thenReturn(localList);
 		Mockito.when(authManager.verifyResponseHeaders(Mockito.anyString(), Mockito.anyString(), Mockito.any())).thenReturn(true);

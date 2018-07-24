@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 import eu.h2020.symbiote.fm.repositories.FederationBackend;
 import eu.h2020.symbiote.fm.services.FederationService;
 import eu.h2020.symbiote.model.mim.Federation;
+import eu.h2020.symbiote.security.commons.ComponentIdentifiers;
 import eu.h2020.symbiote.security.commons.SecurityConstants;
 
 /**
@@ -52,10 +54,14 @@ public class DataSynchronization {
 	 */
 	public void synchronizeFederationDB() {
 		try {
-			String url = administrationURL + "?platformId=" + platformId;
-			ResponseEntity<List> resp = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity<>(authManager.generateRequestHeaders()), List.class);
+			String url = administrationURL.replace("coreInterface/", "") + "?platformId=" + platformId;
 
-			if (!authManager.verifyResponseHeaders("Administration", SecurityConstants.CORE_AAM_INSTANCE_ID, resp.getHeaders())) {
+			ResponseEntity<List<Federation>> resp = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(authManager.generateRequestHeaders()),
+					new ParameterizedTypeReference<List<Federation>>() {
+					});
+
+			if (resp == null
+					|| !authManager.verifyResponseHeaders(ComponentIdentifiers.ADMINISTRATION, SecurityConstants.CORE_AAM_INSTANCE_ID, resp.getHeaders())) {
 				logger.warn("Response Header verification failed.");
 				return;
 			}
