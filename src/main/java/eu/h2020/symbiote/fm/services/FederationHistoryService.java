@@ -1,9 +1,9 @@
 package eu.h2020.symbiote.fm.services;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,46 +34,64 @@ public class FederationHistoryService {
 	 * @return list of {@link FederationHistory}
 	 */
 	public List<FederationHistory> getFederationHistoriesById(String platformId) {
-		// XXX: Assuming right now that federation and platforms can only join+leave once!
-		Map<String, FederationHistory> events = new HashMap<>();
+		List<FederationHistory> events = new ArrayList<>();
 
 		List<FederationEvent> pEvents = this.federationBackend.getPlatformEventsById(platformId);
+		HashMap<String, List<FederationEvent>> pfList = new HashMap<>();
 
-		List<String> fList = new ArrayList<>();
-
+		// map platform events to Federation ID
 		pEvents.forEach(pEvent -> {
-			if (!fList.contains(pEvent.getFederationId())) {
-				fList.add(pEvent.getFederationId());
+			if (!pfList.containsKey(pEvent.getFederationId())) {
+				pfList.put(pEvent.getFederationId(), new ArrayList<FederationEvent>());
 			}
-
-			// add history object if not exists
-			if (!events.containsKey(pEvent.getFederationId())) {
-				events.put(pEvent.getFederationId(), new FederationHistory(pEvent.getFederationId()));
-			}
-
-			// update history objects
-			if (pEvent.getEventType().equals(FederationEvent.EventType.PLATFORM_JOINED)) {
-				events.get(pEvent.getFederationId()).setDatePlatformJoined(pEvent.getDateEvent());
-			} else if (pEvent.getEventType().equals(FederationEvent.EventType.PLATFORM_LEFT)) {
-				events.get(pEvent.getFederationId()).setDatePlatformLeft(pEvent.getDateEvent());
-			} else {
-				logger.error("Platform Event not covered: {}", pEvent.getEventType());
-			}
+			pfList.get(pEvent.getFederationId()).add(pEvent);
 		});
 
-		List<FederationEvent> fedEvents = this.federationBackend.getFederationEventsByIds(fList);
+		// load all relevant federation events
+		List<FederationEvent> fedEvents = this.federationBackend.getFederationEventsByIds(new ArrayList(pfList.keySet()));
 
-		fedEvents.forEach(fedEvent -> {
-			// update history objects
+		for (int i = 0; i < fedEvents.size(); i++) {
+			FederationEvent fedEvent = fedEvents.get(i);
+
 			if (fedEvent.getEventType().equals(FederationEvent.EventType.FEDERATION_CREATED)) {
-				events.get(fedEvent.getFederationId()).setDateFederationCreated(fedEvent.getDateEvent());
-			} else if (fedEvent.getEventType().equals(FederationEvent.EventType.FEDERATION_REMOVED)) {
-				events.get(fedEvent.getFederationId()).setDateFederationRemoved(fedEvent.getDateEvent());
-			} else {
-				logger.warn("Federation Event not covered: {}", fedEvent.getEventType());
-			}
-		});
+				FederationHistory fh = new FederationHistory(fedEvent.getFederationId());
+				fh.setDateFederationCreated(fedEvent.getDateEvent());
 
-		return new ArrayList<>(events.values());
+				for (int ii = i; ii < fedEvents.size(); ii++) {
+					FederationEvent fedCloseEvent = fedEvents.get(ii);
+
+					if (fh.getFederationId().equals(fedCloseEvent.getFederationId())
+							&& fedCloseEvent.getEventType().equals(FederationEvent.EventType.FEDERATION_REMOVED)) {
+						fh.setDateFederationRemoved(fedCloseEvent.getDateEvent());
+						break;
+					}
+				}
+
+				events.add(fh);
+			}
+		}
+
+		// add platform specific infos
+		for (FederationHistory event : events) {
+			List<FederationEvent> pList = pfList.get(event.getFederationId());
+
+			// add platform events to object
+			for (FederationEvent pFe : pList) {
+				if (pFe.getEventType().equals(FederationEvent.EventType.PLATFORM_JOINED)
+						&& isWithinTime(event.getDateFederationCreated(), event.getDateFederationRemoved(), pFe.getDateEvent())) {
+					event.setDatePlatformJoined(pFe.getDateEvent());
+				} else if (pFe.getEventType().equals(FederationEvent.EventType.PLATFORM_LEFT)
+						&& isWithinTime(event.getDateFederationCreated(), event.getDateFederationRemoved(), pFe.getDateEvent())) {
+					event.setDatePlatformLeft(pFe.getDateEvent());
+				}
+			}
+
+		}
+
+		return events;
+	}
+
+	private boolean isWithinTime(Date from, Date to, Date check) {
+		return from.before(check) && (to == null || to.after(check));
 	}
 }

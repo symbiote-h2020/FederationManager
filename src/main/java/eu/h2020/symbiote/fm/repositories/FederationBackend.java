@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import eu.h2020.symbiote.fm.model.FederationEvent;
@@ -72,7 +73,7 @@ public class FederationBackend {
 	 * @return list of {@link FederationEvent}
 	 */
 	public List<FederationEvent> getPlatformEventsById(String platformId) {
-		return this.fedEventRepo.findEventsByPlatformId(platformId);
+		return this.fedEventRepo.findEventsByPlatformId(platformId, new Sort(Sort.Direction.ASC, "dateEvent"));
 	}
 
 	/**
@@ -83,7 +84,7 @@ public class FederationBackend {
 	 * @return list of {@link FederationEvent}
 	 */
 	public List<FederationEvent> getFederationEventsById(String fedId) {
-		return this.fedEventRepo.findEventsByFederationId(fedId);
+		return this.fedEventRepo.findEventsByFederationId(fedId, new Sort(Sort.Direction.ASC, "dateEvent"));
 	}
 
 	/**

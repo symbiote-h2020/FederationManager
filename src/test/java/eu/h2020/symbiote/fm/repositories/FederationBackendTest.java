@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.google.common.collect.Lists;
@@ -65,7 +66,8 @@ public class FederationBackendTest {
 
 	@Test
 	public void testGetFederationEventsByIds() throws Exception {
-		Mockito.when(fedEventRepo.findEventsByFederationId("123")).thenReturn(Lists.newArrayList(new FederationEvent()));
+		Mockito.when(fedEventRepo.findEventsByFederationId("123", new Sort(Sort.Direction.ASC, "dateEvent")))
+				.thenReturn(Lists.newArrayList(new FederationEvent()));
 
 		List<FederationEvent> lst = service.getFederationEventsByIds(Lists.newArrayList("123"));
 		assertFalse(lst.isEmpty());
