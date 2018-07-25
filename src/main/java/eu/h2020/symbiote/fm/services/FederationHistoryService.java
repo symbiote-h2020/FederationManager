@@ -48,8 +48,9 @@ public class FederationHistoryService {
 		});
 
 		// load all relevant federation events
-		List<FederationEvent> fedEvents = this.federationBackend.getFederationEventsByIds(new ArrayList(pfList.keySet()));
+		List<FederationEvent> fedEvents = this.federationBackend.getFederationEventsByIds(new ArrayList<>(pfList.keySet()));
 
+		// Build initial list of FederationEvents
 		for (int i = 0; i < fedEvents.size(); i++) {
 			FederationEvent fedEvent = fedEvents.get(i);
 
@@ -57,7 +58,7 @@ public class FederationHistoryService {
 				FederationHistory fh = new FederationHistory(fedEvent.getFederationId());
 				fh.setDateFederationCreated(fedEvent.getDateEvent());
 
-				for (int ii = i; ii < fedEvents.size(); ii++) {
+				for (int ii = i + 1; ii < fedEvents.size(); ii++) {
 					FederationEvent fedCloseEvent = fedEvents.get(ii);
 
 					if (fh.getFederationId().equals(fedCloseEvent.getFederationId())
@@ -66,29 +67,48 @@ public class FederationHistoryService {
 						break;
 					}
 				}
-
 				events.add(fh);
 			}
 		}
+
+		List<FederationHistory> historyList = new ArrayList<>();
 
 		// add platform specific infos
 		for (FederationHistory event : events) {
 			List<FederationEvent> pList = pfList.get(event.getFederationId());
 
 			// add platform events to object
-			for (FederationEvent pFe : pList) {
+			for (int i = 0; i < pList.size(); i++) {
+				FederationEvent pFe = pList.get(i);
+
 				if (pFe.getEventType().equals(FederationEvent.EventType.PLATFORM_JOINED)
 						&& isWithinTime(event.getDateFederationCreated(), event.getDateFederationRemoved(), pFe.getDateEvent())) {
 					event.setDatePlatformJoined(pFe.getDateEvent());
-				} else if (pFe.getEventType().equals(FederationEvent.EventType.PLATFORM_LEFT)
+				} else if (pFe.getEventType().equals(FederationEvent.EventType.PLATFORM_LEFT) && event.getDatePlatformJoined() != null
 						&& isWithinTime(event.getDateFederationCreated(), event.getDateFederationRemoved(), pFe.getDateEvent())) {
 					event.setDatePlatformLeft(pFe.getDateEvent());
 				}
-			}
 
+				if ((i == pList.size() - 1 && event.getDatePlatformJoined() != null)
+						|| (event.getDatePlatformJoined() != null && event.getDatePlatformLeft() != null)) {
+					historyList.add(copyFederationHistory(event));
+					event.setDatePlatformJoined(null);
+					event.setDatePlatformLeft(null);
+				}
+			}
 		}
 
-		return events;
+		return historyList;
+	}
+
+	private FederationHistory copyFederationHistory(FederationHistory entry) {
+		FederationHistory copy = new FederationHistory(entry.getFederationId());
+		copy.setDateFederationCreated(entry.getDateFederationCreated());
+		copy.setDateFederationRemoved(entry.getDateFederationRemoved());
+		copy.setDatePlatformJoined(entry.getDatePlatformJoined());
+		copy.setDatePlatformLeft(entry.getDatePlatformLeft());
+
+		return copy;
 	}
 
 	private boolean isWithinTime(Date from, Date to, Date check) {

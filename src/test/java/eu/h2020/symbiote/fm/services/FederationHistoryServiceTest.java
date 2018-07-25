@@ -67,7 +67,7 @@ public class FederationHistoryServiceTest {
 	}
 
 	@Test
-	public void testMultiGetFederationHistoriesById() throws Exception {
+	public void testGetFederationHistoriesByIdOwnRejoined() throws Exception {
 		List<FederationEvent> fEvents = new ArrayList<>();
 		fEvents.add(createEvent(EventType.FEDERATION_CREATED, "f-1", null, 1));
 		fEvents.add(createEvent(EventType.FEDERATION_REMOVED, "f-1", null, 100));
@@ -98,6 +98,39 @@ public class FederationHistoryServiceTest {
 				verifyFederationHistory("f-1", new Date(101), new Date(200), new Date(102), new Date(121), h);
 			} else if (h.getDatePlatformJoined().equals(new Date(211))) {
 				verifyFederationHistory("f-1", new Date(201), null, new Date(211), null, h);
+			} else {
+				fail("Element not expected");
+			}
+		}
+	}
+
+	@Test
+	public void testGetFederationHistoriesByIdForeignRejoined() throws Exception {
+		List<FederationEvent> fEvents = new ArrayList<>();
+		fEvents.add(createEvent(EventType.FEDERATION_CREATED, "f-1", null, 1));
+
+		List<FederationEvent> pEvents = new ArrayList<>();
+		pEvents.add(createEvent(EventType.PLATFORM_JOINED, "f-1", "p-1", 11));
+		pEvents.add(createEvent(EventType.PLATFORM_LEFT, "f-1", "p-1", 21));
+		pEvents.add(createEvent(EventType.PLATFORM_JOINED, "f-1", "p-1", 102));
+		pEvents.add(createEvent(EventType.PLATFORM_LEFT, "f-1", "p-1", 121));
+		pEvents.add(createEvent(EventType.PLATFORM_LEFT, "f-1", "p-1", 129));
+		pEvents.add(createEvent(EventType.PLATFORM_JOINED, "f-1", "p-1", 211));
+
+		Mockito.when(federationBackend.getPlatformEventsById(Mockito.anyString())).thenReturn(pEvents);
+		Mockito.when(federationBackend.getFederationEventsByIds(Mockito.anyListOf(String.class))).thenReturn(fEvents);
+
+		List<FederationHistory> hl = service.getFederationHistoriesById("p-1");
+
+		assertEquals(3, hl.size());
+
+		for (FederationHistory h : hl) {
+			if (h.getDatePlatformJoined().equals(new Date(11))) {
+				verifyFederationHistory("f-1", new Date(1), null, new Date(11), new Date(21), h);
+			} else if (h.getDatePlatformJoined().equals(new Date(102))) {
+				verifyFederationHistory("f-1", new Date(1), null, new Date(102), new Date(121), h);
+			} else if (h.getDatePlatformJoined().equals(new Date(211))) {
+				verifyFederationHistory("f-1", new Date(1), null, new Date(211), null, h);
 			} else {
 				fail("Element not expected");
 			}
