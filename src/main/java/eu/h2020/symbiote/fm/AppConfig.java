@@ -12,6 +12,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.web.client.RestTemplate;
 
@@ -27,6 +28,9 @@ import com.mongodb.MongoClient;
 @Configuration
 @EnableMongoRepositories
 class AppConfig extends AbstractMongoConfiguration {
+
+	@Value("${spring.data.mongodb.host:localhost}")
+	private String mongoHost;
 
 	@Override
 	protected String getDatabaseName() {
@@ -65,4 +69,11 @@ class AppConfig extends AbstractMongoConfiguration {
 	public Mongo mongo() throws Exception {
 		return new MongoClient();
 	}
+
+    @Bean
+    @Override
+    public MongoTemplate mongoTemplate() {
+        return new MongoTemplate(new MongoClient(mongoHost), getDatabaseName());
+    }
+
 }
